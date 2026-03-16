@@ -4,6 +4,8 @@ import { useStore } from "@/lib/store";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Chrome, Apple, Github, Twitter } from "lucide-react";
 
 export function Login() {
   const [email, setEmail] = useState("");
@@ -20,6 +22,10 @@ export function Login() {
     } catch (err) {
       toast.error("Invalid credentials. Try admin@marketplace.com, buyer@..., seller@...");
     }
+  };
+
+  const handleSocialLogin = (provider: string) => {
+    toast.info(`${provider} sign in coming soon!`);
   };
 
   return (
@@ -50,6 +56,55 @@ export function Login() {
             </div>
             <Button type="submit" className="w-full h-12 text-base font-semibold rounded-xl">Sign in</Button>
           </form>
+
+          {/* Social Login Options */}
+          <div className="mt-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <Separator className="w-full" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6 space-y-3">
+            <Button 
+              variant="outline" 
+              className="w-full h-11 gap-2 border-border hover:bg-secondary"
+              onClick={() => handleSocialLogin("Google")}
+            >
+              <Chrome className="w-4 h-4" />
+              Continue with Google
+            </Button>
+            <Button 
+              variant="outline" 
+              className="w-full h-11 gap-2 border-border hover:bg-secondary"
+              onClick={() => handleSocialLogin("Apple")}
+            >
+              <Apple className="w-4 h-4" />
+              Continue with Apple
+            </Button>
+            <div className="grid grid-cols-2 gap-3">
+              <Button 
+                variant="outline" 
+                className="h-11 gap-2 border-border hover:bg-secondary"
+                onClick={() => handleSocialLogin("GitHub")}
+              >
+                <Github className="w-4 h-4" />
+                GitHub
+              </Button>
+              <Button 
+                variant="outline" 
+                className="h-11 gap-2 border-border hover:bg-secondary"
+                onClick={() => handleSocialLogin("Twitter")}
+              >
+                <Twitter className="w-4 h-4" />
+                Twitter
+              </Button>
+            </div>
+          </div>
           
           <div className="mt-6 text-center">
             <p className="text-sm text-muted-foreground">
@@ -84,6 +139,10 @@ export function Register() {
     }
     
     setLocation('/dashboard');
+  };
+
+  const handleSocialLogin = (provider: string) => {
+    toast.info(`${provider} sign up coming soon!`);
   };
 
   return (
@@ -126,6 +185,55 @@ export function Register() {
 
             <Button type="submit" className="w-full h-12 text-base font-semibold rounded-xl">Create Account</Button>
           </form>
+
+          {/* Social Sign Up Options */}
+          <div className="mt-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <Separator className="w-full" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-card px-2 text-muted-foreground">Or sign up with</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6 space-y-3">
+            <Button 
+              variant="outline" 
+              className="w-full h-11 gap-2 border-border hover:bg-secondary"
+              onClick={() => handleSocialLogin("Google")}
+            >
+              <Chrome className="w-4 h-4" />
+              Continue with Google
+            </Button>
+            <Button 
+              variant="outline" 
+              className="w-full h-11 gap-2 border-border hover:bg-secondary"
+              onClick={() => handleSocialLogin("Apple")}
+            >
+              <Apple className="w-4 h-4" />
+              Continue with Apple
+            </Button>
+            <div className="grid grid-cols-2 gap-3">
+              <Button 
+                variant="outline" 
+                className="h-11 gap-2 border-border hover:bg-secondary"
+                onClick={() => handleSocialLogin("GitHub")}
+              >
+                <Github className="w-4 h-4" />
+                GitHub
+              </Button>
+              <Button 
+                variant="outline" 
+                className="h-11 gap-2 border-border hover:bg-secondary"
+                onClick={() => handleSocialLogin("Twitter")}
+              >
+                <Twitter className="w-4 h-4" />
+                Twitter
+              </Button>
+            </div>
+          </div>
           
           <div className="mt-6 text-center">
             <p className="text-sm text-muted-foreground">
