@@ -46,6 +46,15 @@ export interface Purchase {
   type: 'ai_workflow' | 'roblox_script';
 }
 
+export interface TicketReply {
+  id: string;
+  ticketId: string;
+  from: 'user' | 'admin';
+  message: string;
+  date: string;
+  senderName?: string;
+}
+
 export interface Ticket {
   id: string;
   userId: string;
@@ -53,6 +62,7 @@ export interface Ticket {
   message: string;
   status: 'Open' | 'In Progress' | 'Resolved' | 'Closed';
   date: string;
+  replies: TicketReply[];
 }
 
 // --- Mock Data ---
@@ -96,6 +106,10 @@ interface AppState {
   buyItem: (itemId: string) => void;
   createTicket: (subject: string, message: string) => void;
   uploadItem: (item: Omit<Workflow, 'id' | 'sellerId' | 'sellerName' | 'sellerLevel' | 'rating' | 'testCount' | 'createdAt'>) => void;
+  
+  // Support Actions
+  addTicketReply: (ticketId: string, message: string, from: 'user' | 'admin') => void;
+  updateTicketStatus: (ticketId: string, status: Ticket['status']) => void;
   
   // Admin Actions
   updateItemStatus: (id: string, status: Workflow['status']) => void;
@@ -163,9 +177,45 @@ export const useStore = create<AppState>()(
           subject,
           message,
           status: 'Open',
-          date: new Date().toISOString()
+          date: new Date().toISOString(),
+          replies: []
         };
         set(state => ({ tickets: [ticket, ...state.tickets] }));
+      },
+
+      addTicketReply: (ticketId, message, from) => {
+        const state = get();
+        const user = state.currentUser;
+        if (!user) return;
+        
+        const reply: TicketReply = {
+          id: `r${Date.now()}`,
+          ticketId,
+          from,
+          message,
+          date: new Date().toISOString(),
+          senderName: user.username
+        };
+        
+        set(state => ({
+          tickets: state.tickets.map(ticket => 
+            ticket.id === ticketId 
+              ? { 
+                  ...ticket, 
+                  replies: [...(ticket.replies || []), reply],
+                  status: from === 'admin' ? 'In Progress' : ticket.status
+                }
+              : ticket
+          )
+        }));
+      },
+
+      updateTicketStatus: (ticketId, status) => {
+        set(state => ({
+          tickets: state.tickets.map(ticket => 
+            ticket.id === ticketId ? { ...ticket, status, replies: ticket.replies || [] } : ticket
+          )
+        }));
       },
 
       uploadItem: (itemData) => {

@@ -13,8 +13,10 @@ import TestInterface from "@/pages/TestInterface";
 import SellerProfile from "@/pages/SellerProfile";
 import BuyerDashboard from "@/pages/dashboard/BuyerDashboard";
 import BuyerSupport from "@/pages/dashboard/BuyerSupport";
+import BuyerSubscriptions from "@/pages/dashboard/BuyerSubscriptions";
 import { SellerDashboard } from "@/pages/dashboard/SellerDashboard";
 import SellerItems from "@/pages/dashboard/SellerItems";
+import SellerAnalytics from "@/pages/dashboard/SellerAnalytics";
 import UploadWorkflow from "@/pages/dashboard/UploadWorkflow";
 import { AdminDashboard } from "@/pages/admin/AdminDashboard";
 import { AdminItems } from "@/pages/admin/AdminItems";
@@ -69,6 +71,12 @@ function Router() {
           <BuyerSupport />
         </ProtectedRoute>
       </Route>
+      <Route path="/dashboard/subscriptions">
+        <ProtectedRoute allowedRoles={["buyer", "seller", "admin"]}>
+          <BuyerSubscriptions />
+        </ProtectedRoute>
+      </Route>
+      
 
       {/* Seller Routes */}
       <Route path="/seller-dashboard">
@@ -79,6 +87,11 @@ function Router() {
       <Route path="/seller-dashboard/items">
         <ProtectedRoute allowedRoles={["seller", "admin"]}>
           <SellerItems />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/seller-dashboard/analytics">
+        <ProtectedRoute allowedRoles={["seller", "admin"]}>
+          <SellerAnalytics />
         </ProtectedRoute>
       </Route>
       <Route path="/seller-dashboard/upload">

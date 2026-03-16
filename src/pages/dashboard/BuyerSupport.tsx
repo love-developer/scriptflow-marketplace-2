@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { LifeBuoy, Plus, MessageCircle } from "lucide-react";
+import { LifeBuoy, Plus, MessageCircle, Send, ArrowUpRight } from "lucide-react";
 import { format } from "date-fns";
 
 const STATUS_STYLES: Record<string, string> = {
@@ -17,16 +17,16 @@ const STATUS_STYLES: Record<string, string> = {
   "Closed": "bg-secondary text-muted-foreground border-border",
 };
 
-const MOCK_REPLIES: Record<string, { from: string; message: string; date: string }[]> = {};
-
 export default function BuyerSupport() {
-  const { tickets, currentUser, createTicket } = useStore();
+  const { tickets, currentUser, createTicket, addTicketReply } = useStore();
   const myTickets = tickets.filter(t => t.userId === currentUser?.id);
 
   const [showForm, setShowForm] = useState(false);
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [expandedTicket, setExpandedTicket] = useState<string | null>(null);
+  const [replyMessages, setReplyMessages] = useState<Record<string, string>>({});
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,6 +43,25 @@ export default function BuyerSupport() {
       setShowForm(false);
       setLoading(false);
     }, 600);
+  };
+
+  const handleSendReply = (ticketId: string) => {
+    const replyMessage = replyMessages[ticketId]?.trim();
+    if (!replyMessage) {
+      toast.error("Please enter a reply message.");
+      return;
+    }
+    
+    addTicketReply(ticketId, replyMessage, 'user');
+    setReplyMessages(prev => ({ ...prev, [ticketId]: "" }));
+    toast.success("Reply sent successfully!");
+  };
+
+  const getStatusMessage = (ticket: any) => {
+    if (ticket.status === "Open") return "Waiting for support team response...";
+    if (ticket.status === "In Progress") return "Support team is reviewing your ticket.";
+    if (ticket.status === "Resolved") return "Ticket resolved. You can still reply if needed.";
+    return "Ticket closed.";
   };
 
   return (
@@ -64,11 +83,22 @@ export default function BuyerSupport() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="subject">Subject</Label>
-              <Input id="subject" placeholder="Brief description of your issue" value={subject} onChange={e => setSubject(e.target.value)} />
+              <Input 
+                id="subject" 
+                placeholder="Brief description of your issue" 
+                value={subject} 
+                onChange={e => setSubject(e.target.value)} 
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="message">Message</Label>
-              <Textarea id="message" placeholder="Describe your issue in detail..." rows={4} value={message} onChange={e => setMessage(e.target.value)} />
+              <Textarea 
+                id="message" 
+                placeholder="Describe your issue in detail..." 
+                rows={4} 
+                value={message} 
+                onChange={e => setMessage(e.target.value)} 
+              />
             </div>
             <div className="flex gap-3">
               <Button type="submit" disabled={loading}>{loading ? "Submitting..." : "Submit Ticket"}</Button>
@@ -87,40 +117,121 @@ export default function BuyerSupport() {
       ) : (
         <div className="space-y-4">
           {myTickets.map(ticket => (
-            <div key={ticket.id} className="bg-card border border-border rounded-2xl p-6">
-              <div className="flex items-start justify-between gap-4 mb-3">
-                <div>
-                  <h3 className="font-semibold">{ticket.subject}</h3>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Ticket #{ticket.id.slice(0, 8)} · {format(new Date(ticket.date), "MMM d, yyyy 'at' h:mm a")}
-                  </p>
+            <div key={ticket.id} className="bg-card border border-border rounded-2xl overflow-hidden">
+              {/* Ticket Header */}
+              <div 
+                className="p-6 cursor-pointer hover:bg-secondary/20 transition-colors"
+                onClick={() => setExpandedTicket(expandedTicket === ticket.id ? null : ticket.id)}
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-lg">{ticket.subject}</h3>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Ticket #{ticket.id.slice(0, 8)} · {format(new Date(ticket.date), "MMM d, yyyy 'at' h:mm a")}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Badge variant="outline" className={STATUS_STYLES[ticket.status]}>
+                      {ticket.status}
+                    </Badge>
+                    <MessageCircle className="w-4 h-4 text-muted-foreground" />
+                    {(ticket.replies || []).length > 0 && (
+                      <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
+                        {(ticket.replies || []).length} {(ticket.replies || []).length === 1 ? 'reply' : 'replies'}
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <Badge variant="outline" className={STATUS_STYLES[ticket.status]}>{ticket.status}</Badge>
+                
+                {/* Original Message Preview */}
+                <p className="text-sm text-muted-foreground mt-3 line-clamp-2">{ticket.message}</p>
+                
+                <div className="flex items-center gap-2 mt-3">
+                  <MessageCircle className="w-4 h-4 text-muted-foreground" />
+                  <p className="text-xs text-muted-foreground">{getStatusMessage(ticket)}</p>
+                  <ArrowUpRight className={`w-3 h-3 text-muted-foreground transition-transform ${expandedTicket === ticket.id ? 'rotate-180' : ''}`} />
+                </div>
               </div>
-              <p className="text-sm text-muted-foreground bg-secondary/50 rounded-lg p-3">{ticket.message}</p>
 
-              {MOCK_REPLIES[ticket.id] ? (
-                <div className="mt-4 space-y-2">
-                  {MOCK_REPLIES[ticket.id].map((reply, i) => (
-                    <div key={i} className="bg-secondary/40 rounded-lg p-3 text-sm">
-                      <p className="font-medium text-xs mb-1">{reply.from} · Support Agent</p>
-                      <p className="text-muted-foreground">{reply.message}</p>
+              {/* Expanded Ticket Details */}
+              {expandedTicket === ticket.id && (
+                <div className="border-t border-border bg-secondary/20">
+                  <div className="p-6 space-y-4">
+                    {/* Original Message */}
+                    <div>
+                      <h4 className="font-semibold text-sm mb-2">Original Message</h4>
+                      <div className="bg-background rounded-lg p-4 text-sm">
+                        <p className="font-medium text-xs text-muted-foreground mb-2">
+                          You · {format(new Date(ticket.date), "MMM d, yyyy 'at' h:mm a")}
+                        </p>
+                        <p>{ticket.message}</p>
+                      </div>
                     </div>
-                  ))}
-                </div>
-              ) : ticket.status === "Resolved" ? (
-                <div className="mt-4 bg-secondary/40 rounded-lg p-3 text-sm">
-                  <p className="font-medium text-xs mb-1">Support Team · Agent Reply</p>
-                  <p className="text-muted-foreground">Thank you for contacting us! Your issue has been resolved. Please let us know if you need further assistance.</p>
-                </div>
-              ) : null}
 
-              <div className="flex items-center gap-2 mt-4 pt-3 border-t border-border">
-                <MessageCircle className="w-4 h-4 text-muted-foreground" />
-                <p className="text-xs text-muted-foreground">
-                  {ticket.status === "Open" ? "Waiting for support team response..." : ticket.status === "Resolved" ? "Ticket resolved." : "In progress — agent is reviewing your ticket."}
-                </p>
-              </div>
+                    {/* Replies */}
+                    {(ticket.replies || []).length > 0 && (
+                      <div>
+                        <h4 className="font-semibold text-sm mb-3">Conversation</h4>
+                        <div className="space-y-3">
+                          {(ticket.replies || []).map(reply => (
+                            <div key={reply.id} className={`rounded-lg p-4 text-sm ${
+                              reply.from === 'admin' 
+                                ? 'bg-primary/5 border border-primary/20' 
+                                : 'bg-muted/30'
+                            }`}>
+                              <p className="font-medium text-xs mb-2">
+                                {reply.senderName} · {reply.from === 'admin' ? 'Support Agent' : 'You'} · 
+                                {format(new Date(reply.date), "MMM d, yyyy 'at' h:mm a")}
+                              </p>
+                              <p className="whitespace-pre-wrap">{reply.message}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Reply Form */}
+                    {(ticket.status !== 'Closed') && (
+                      <div>
+                        <h4 className="font-semibold text-sm mb-2">Send Reply</h4>
+                        <div className="space-y-3">
+                          <Textarea
+                            placeholder="Type your reply here..."
+                            rows={3}
+                            value={replyMessages[ticket.id] || ""}
+                            onChange={e => setReplyMessages(prev => ({ ...prev, [ticket.id]: e.target.value }))}
+                            className="resize-none"
+                          />
+                          <div className="flex gap-2">
+                            <Button 
+                              size="sm" 
+                              onClick={() => handleSendReply(ticket.id)}
+                              disabled={!replyMessages[ticket.id]?.trim()}
+                              className="gap-2"
+                            >
+                              <Send className="w-3 h-3" />
+                              Send Reply
+                            </Button>
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={() => setReplyMessages(prev => ({ ...prev, [ticket.id]: "" }))}
+                            >
+                              Clear
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {ticket.status === 'Closed' && (
+                      <div className="bg-muted/30 rounded-lg p-4 text-sm text-center">
+                        <p className="text-muted-foreground">This ticket is closed. Create a new ticket for additional support.</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>
