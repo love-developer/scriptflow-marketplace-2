@@ -33,9 +33,9 @@ export function Layout({ children }: { children: ReactNode }) {
           <div className="flex items-center gap-8">
             <Link href="/" className="font-display font-bold text-xl tracking-tight flex items-center gap-2.5 flex-shrink-0">
               <div className="w-8 h-8 gradient-bg rounded-lg flex items-center justify-center shadow-lg shadow-primary/20">
-                <span className="text-white text-xs font-bold">WX</span>
+                <span className="text-white text-xs font-bold">SF</span>
               </div>
-              <span className="hidden sm:block">Workflux</span>
+              <span className="hidden sm:block">ScriptFlow</span>
             </Link>
             <nav className="hidden md:flex items-center gap-1">
               {navLinks.map(l => (
@@ -128,9 +128,9 @@ export function Layout({ children }: { children: ReactNode }) {
             <div className="col-span-1 sm:col-span-2">
               <Link href="/" className="font-display font-bold text-xl tracking-tight mb-3 flex items-center gap-2">
                 <div className="w-7 h-7 gradient-bg rounded-lg flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">WX</span>
+                  <span className="text-white text-xs font-bold">SF</span>
                 </div>
-                Workflux
+                ScriptFlow
               </Link>
               <p className="text-muted-foreground text-sm max-w-xs">
                 The premium marketplace for ComfyUI AI Workflows and exclusive Roblox scripts for serious players.
@@ -154,7 +154,7 @@ export function Layout({ children }: { children: ReactNode }) {
             </div>
           </div>
           <div className="pt-8 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-            <span>© {new Date().getFullYear()} Workflux. All rights reserved.</span>
+            <span>© {new Date().getFullYear()} ScriptFlow. All rights reserved.</span>
             <div className="flex items-center gap-1.5">
               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               All systems operational

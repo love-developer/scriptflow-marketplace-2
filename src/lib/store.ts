@@ -65,6 +65,19 @@ export interface Ticket {
   replies: TicketReply[];
 }
 
+export interface SellerRequest {
+  id: string;
+  userId: string;
+  username: string;
+  email: string;
+  message: string;
+  status: 'Pending' | 'Approved' | 'Rejected';
+  date: string;
+  reviewedBy?: string;
+  reviewedAt?: string;
+  reviewMessage?: string;
+}
+
 // --- Mock Data ---
 const MOCK_USERS: User[] = [
   { id: 'u1', email: 'admin@marketplace.com', username: 'AdminMaster', role: 'admin', level: 'Legendary Creator', joinDate: '2023-01-01', sales: 0, bio: 'Platform administrator.' },
@@ -97,6 +110,7 @@ interface AppState {
   items: Workflow[];
   purchases: Purchase[];
   tickets: Ticket[];
+  sellerRequests: SellerRequest[];
   
   // Actions
   login: (email: string, pass: string) => void;
@@ -106,6 +120,7 @@ interface AppState {
   buyItem: (itemId: string) => void;
   createTicket: (subject: string, message: string) => void;
   uploadItem: (item: Omit<Workflow, 'id' | 'sellerId' | 'sellerName' | 'sellerLevel' | 'rating' | 'testCount' | 'createdAt'>) => void;
+  requestSellerStatus: (message: string) => void;
   
   // Support Actions
   addTicketReply: (ticketId: string, message: string, from: 'user' | 'admin') => void;
@@ -115,6 +130,7 @@ interface AppState {
   updateItemStatus: (id: string, status: Workflow['status']) => void;
   updateUserRole: (id: string, role: Role) => void;
   deleteItem: (id: string) => void;
+  approveSellerRequest: (requestId: string, approved: boolean, reviewMessage?: string) => void;
 }
 
 export const useStore = create<AppState>()(
@@ -125,6 +141,7 @@ export const useStore = create<AppState>()(
       items: MOCK_ITEMS,
       purchases: [],
       tickets: [],
+      sellerRequests: [],
 
       login: (email) => {
         const user = get().users.find(u => u.email === email);
@@ -251,6 +268,53 @@ export const useStore = create<AppState>()(
         set(state => ({
           items: state.items.filter(i => i.id !== id)
         }));
+      },
+
+      requestSellerStatus: (message) => {
+        const user = get().currentUser;
+        if (!user) return;
+
+        const request: SellerRequest = {
+          id: `sr${Date.now()}`,
+          userId: user.id,
+          username: user.username,
+          email: user.email,
+          message,
+          status: 'Pending',
+          date: new Date().toISOString()
+        };
+
+        set(state => ({ sellerRequests: [request, ...state.sellerRequests] }));
+      },
+
+      approveSellerRequest: (requestId, approved, reviewMessage) => {
+        const state = get();
+        const request = state.sellerRequests.find(r => r.id === requestId);
+        if (!request) return;
+
+        // Update the request
+        set(state => ({
+          sellerRequests: state.sellerRequests.map(r => 
+            r.id === requestId 
+              ? { 
+                  ...r, 
+                  status: approved ? 'Approved' : 'Rejected',
+                  reviewedBy: state.currentUser?.username,
+                  reviewedAt: new Date().toISOString(),
+                  reviewMessage
+                }
+              : r
+          )
+        }));
+
+        // If approved, update user role
+        if (approved) {
+          set(state => ({
+            users: state.users.map(u => 
+              u.id === request.userId ? { ...u, role: 'seller' as Role } : u
+            )
+          }));
+        }
       }
     }),
     {

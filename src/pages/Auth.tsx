@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { useStore, Role } from "@/lib/store";
+import { useStore } from "@/lib/store";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -23,9 +23,9 @@ export function Login() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-muted/30">
+    <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-muted/30 roblox-pattern">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <Link href="/" className="font-display font-bold text-3xl text-center block mb-8 tracking-tight">Workflux</Link>
+        <Link href="/" className="font-display font-bold text-3xl text-center block mb-8 tracking-tight">ScriptFlow</Link>
         <h2 className="mt-6 text-center text-2xl font-bold tracking-tight text-foreground">Sign in to your account</h2>
       </div>
 
@@ -66,21 +66,30 @@ export function Register() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<Role>('buyer');
+  const [wantsToSell, setWantsToSell] = useState(false);
   const [, setLocation] = useLocation();
-  const { register } = useStore();
+  const { register, requestSellerStatus } = useStore();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    register(email, password, username, role);
-    toast.success("Account created successfully");
-    setLocation(role === 'buyer' ? '/dashboard' : '/seller-dashboard');
+    // Always register as buyer first, seller status will be requested separately
+    register(email, password, username, 'buyer');
+    
+    if (wantsToSell) {
+      // Submit seller request
+      requestSellerStatus("I would like to become a seller to share my assets with the community.");
+      toast.success("Account created! Your seller request has been submitted for admin approval.");
+    } else {
+      toast.success("Account created successfully");
+    }
+    
+    setLocation('/dashboard');
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-muted/30">
+    <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-muted/30 roblox-pattern">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <Link href="/" className="font-display font-bold text-3xl text-center block mb-8 tracking-tight">Workflux</Link>
+        <Link href="/" className="font-display font-bold text-3xl text-center block mb-8 tracking-tight">ScriptFlow</Link>
         <h2 className="mt-6 text-center text-2xl font-bold tracking-tight text-foreground">Create an account</h2>
       </div>
 
@@ -100,27 +109,22 @@ export function Register() {
               <Input required type="password" value={password} onChange={e => setPassword(e.target.value)} className="h-12 bg-background" />
             </div>
             
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-3">I want to...</label>
-              <div className="grid grid-cols-2 gap-4">
-                <button
-                  type="button"
-                  onClick={() => setRole('buyer')}
-                  className={`py-3 px-4 border rounded-xl text-sm font-medium transition-all ${role === 'buyer' ? 'border-primary bg-primary/5 text-primary' : 'border-border text-muted-foreground hover:border-muted-foreground'}`}
-                >
-                  Buy Assets
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setRole('seller')}
-                  className={`py-3 px-4 border rounded-xl text-sm font-medium transition-all ${role === 'seller' ? 'border-primary bg-primary/5 text-primary' : 'border-border text-muted-foreground hover:border-muted-foreground'}`}
-                >
-                  Sell Assets
-                </button>
-              </div>
+            <div className="bg-muted/30 rounded-lg p-4">
+              <label className="flex items-center space-x-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={wantsToSell}
+                  onChange={(e) => setWantsToSell(e.target.checked)}
+                  className="w-4 h-4 text-primary border-border rounded focus:ring-primary focus:ring-2"
+                />
+                <div className="flex-1">
+                  <span className="text-sm font-medium text-foreground">I also want to sell assets</span>
+                  <p className="text-xs text-muted-foreground mt-1">Request seller status (requires admin approval)</p>
+                </div>
+              </label>
             </div>
 
-            <Button type="submit" className="w-full h-12 text-base font-semibold rounded-xl mt-4">Create Account</Button>
+            <Button type="submit" className="w-full h-12 text-base font-semibold rounded-xl">Create Account</Button>
           </form>
           
           <div className="mt-6 text-center">

@@ -2,7 +2,10 @@ import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { PageTransition } from "@/components/ui/PageTransition";
+import { PageLoading } from "@/components/ui/LoadingSpinner";
 import { useStore } from "@/lib/store";
+import { useState, useEffect } from "react";
 
 // Pages
 import Home from "@/pages/Home";
@@ -34,31 +37,51 @@ const queryClient = new QueryClient();
 function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode; allowedRoles: string[] }) {
   const { currentUser } = useStore();
   const [, setLocation] = useLocation();
+  const [isLoading, setIsLoading] = useState(true);
 
-  if (!currentUser) {
-    setTimeout(() => setLocation("/login"), 0);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+      if (!currentUser) {
+        setLocation("/login");
+      } else if (!allowedRoles.includes(currentUser.role)) {
+        setLocation("/");
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [currentUser, allowedRoles, setLocation]);
+
+  if (isLoading) {
+    return <PageLoading message="Verifying access..." />;
+  }
+
+  if (!currentUser || !allowedRoles.includes(currentUser.role)) {
     return null;
   }
 
-  if (!allowedRoles.includes(currentUser.role)) {
-    setTimeout(() => setLocation("/"), 0);
-    return null;
-  }
+  return <PageTransition>{children}</PageTransition>;
+}
 
-  return <>{children}</>;
+function RouteWithTransition({ component: Component, ...props }: any) {
+  return (
+    <PageTransition>
+      <Component {...props} />
+    </PageTransition>
+  );
 }
 
 function Router() {
   return (
     <Switch>
       {/* Public Routes */}
-      <Route path="/" component={Home} />
-      <Route path="/pricing" component={Pricing} />
-      <Route path="/login" component={Login} />
-      <Route path="/register" component={Register} />
-      <Route path="/item/:id" component={ItemDetail} />
-      <Route path="/test/:id" component={TestInterface} />
-      <Route path="/creator/:username" component={SellerProfile} />
+      <Route path="/" component={(props) => <RouteWithTransition component={Home} {...props} />} />
+      <Route path="/pricing" component={(props) => <RouteWithTransition component={Pricing} {...props} />} />
+      <Route path="/login" component={(props) => <RouteWithTransition component={Login} {...props} />} />
+      <Route path="/register" component={(props) => <RouteWithTransition component={Register} {...props} />} />
+      <Route path="/item/:id" component={(props) => <RouteWithTransition component={ItemDetail} {...props} />} />
+      <Route path="/test/:id" component={(props) => <RouteWithTransition component={TestInterface} {...props} />} />
+      <Route path="/creator/:username" component={(props) => <RouteWithTransition component={SellerProfile} {...props} />} />
 
       {/* Buyer Routes */}
       <Route path="/dashboard">

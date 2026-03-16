@@ -69,9 +69,9 @@ export function DashboardLayout({ children, role }: { children: ReactNode; role:
         <div className="h-16 flex items-center justify-between px-5 border-b border-border flex-shrink-0">
           <Link href="/" className="font-display font-bold text-lg flex items-center gap-2">
             <div className="w-7 h-7 gradient-bg rounded-lg flex items-center justify-center shadow shadow-primary/20">
-              <span className="text-white text-xs font-bold">WX</span>
+              <span className="text-white text-xs font-bold">SF</span>
             </div>
-            Workflux
+            ScriptFlow
           </Link>
           <button
             onClick={toggle}
@@ -171,9 +171,9 @@ export function DashboardLayout({ children, role }: { children: ReactNode; role:
         <header className="h-14 border-b border-border bg-card/90 backdrop-blur flex items-center justify-between px-4 md:hidden sticky top-0 z-20">
           <Link href="/" className="font-display font-bold text-base flex items-center gap-2">
             <div className="w-6 h-6 gradient-bg rounded flex items-center justify-center">
-              <span className="text-white text-[10px] font-bold">WX</span>
+              <span className="text-white text-[10px] font-bold">SF</span>
             </div>
-            Workflux
+            ScriptFlow
           </Link>
           <Button variant="ghost" size="icon" className="w-9 h-9" onClick={() => setMobileOpen(true)}>
             <Menu className="w-5 h-5" />
