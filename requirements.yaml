@@ -1,0 +1,15 @@
+packages:
+  "zustand": "State management with localStorage persistence"
+  "recharts": "Charts for dashboards"
+  "framer-motion": "Animations and transitions"
+  "date-fns": "Date formatting"
+  "sonner": "Toast notifications"
+
+images:
+  - path: "artifacts/marketplace/public/images/hero-bg.png"
+    description: "Clean minimalist abstract geometric shapes in monochrome grayscale, subtle gradient, professional and premium feel"
+    aspect_ratio: "16:9"
+
+notes:
+  - Frontend-only application using Zustand + localStorage for all persistence.
+  - No real backend API.
