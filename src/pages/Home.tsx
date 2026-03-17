@@ -35,7 +35,7 @@ export default function Home() {
         <div className="hero-glow" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-4xl mx-auto">
-            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 text-primary px-4 py-1.5 rounded-full text-sm font-semibold mb-6">
+            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 text-primary px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold mb-6">
               <Sparkles className="w-3.5 h-3.5" />
               Premium ComfyUI Workflows & Roblox Scripts
             </div>
@@ -53,17 +53,18 @@ export default function Home() {
             </p>
 
             {/* Search bar */}
-            <div className="max-w-2xl mx-auto flex flex-col sm:flex-row items-center bg-card border border-border rounded-2xl shadow-xl shadow-black/5 p-1.5 gap-2 mb-8">
-              <Search className="w-5 h-5 text-muted-foreground ml-3 flex-shrink-0" />
-              <Input
-                className="flex-1 border-0 shadow-none focus-visible:ring-0 text-base bg-transparent h-11 pl-2 w-full"
-                placeholder="Search workflows by name or model..."
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-              />
-              <Button size="default" className="gradient-bg text-white border-0 hover:opacity-90 rounded-xl h-11 px-6 flex-shrink-0 w-full sm:w-auto">
-                Search
-              </Button>
+            <div className="max-w-2xl mx-auto bg-card border border-border rounded-2xl shadow-xl shadow-black/5 p-1.5 mb-8">
+              <div className="flex items-center gap-2">
+                <Input
+                  className="flex-1 border-0 shadow-none focus-visible:ring-0 text-base bg-transparent h-11 px-2"
+                  placeholder="Search workflows by name or model..."
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                />
+                <Button size="sm" className="gradient-bg text-white border-0 hover:opacity-90 rounded-xl h-9 px-4 flex-shrink-0">
+                  Search
+                </Button>
+              </div>
             </div>
 
             {/* CTAs */}
