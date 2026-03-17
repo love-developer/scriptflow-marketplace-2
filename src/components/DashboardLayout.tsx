@@ -3,10 +3,9 @@ import { Link, useLocation } from "wouter";
 import { useStore } from "@/lib/store";
 import { useDarkMode } from "@/lib/darkMode";
 import {
-  LayoutDashboard, Package, ShoppingBag, Settings,
-  Users, CreditCard, LifeBuoy, ShieldAlert, FileCode2,
+  LayoutDashboard, Package, ShoppingBag, Users, CreditCard, LifeBuoy, ShieldAlert, FileCode2,
   LogOut, Menu, Upload, Award, FileText, BarChart2,
-  Sun, Moon, ChevronRight, Sparkles, X
+  Sun, Moon, ChevronRight, Sparkles
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -158,8 +157,11 @@ export function DashboardLayout({ children, role }: { children: ReactNode; role:
       {/* Mobile Sidebar */}
       {mobileOpen && (
         <div className="fixed inset-0 z-40 md:hidden">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
-          <aside className="absolute left-0 top-0 bottom-0 w-72 bg-card border-r border-border flex flex-col shadow-2xl">
+          <div 
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-200" 
+            onClick={() => setMobileOpen(false)} 
+          />
+          <aside className="absolute left-0 top-0 bottom-0 w-72 bg-card border-r border-border flex flex-col shadow-2xl transform transition-transform duration-300 ease-in-out">
             <SidebarContent />
           </aside>
         </div>
@@ -168,15 +170,15 @@ export function DashboardLayout({ children, role }: { children: ReactNode; role:
       {/* Main */}
       <main className="flex-1 md:pl-64 flex flex-col min-h-screen">
         {/* Mobile header */}
-        <header className="h-14 border-b border-border bg-card/90 backdrop-blur flex items-center justify-between px-4 md:hidden sticky top-0 z-20">
-          <Link href="/" className="font-display font-bold text-base flex items-center gap-2">
-            <div className="w-6 h-6 gradient-bg rounded flex items-center justify-center">
-              <span className="text-white text-[10px] font-bold">SF</span>
+        <header className="h-14 sm:h-16 border-b border-border bg-card/90 backdrop-blur flex items-center justify-between px-4 sm:px-6 md:hidden sticky top-0 z-20">
+          <Link href="/" className="font-display font-bold text-base sm:text-lg flex items-center gap-2">
+            <div className="w-6 h-6 sm:w-7 sm:h-7 gradient-bg rounded flex items-center justify-center">
+              <span className="text-white text-[10px] sm:text-xs font-bold">SF</span>
             </div>
-            ScriptFlow
+            <span className="hidden sm:inline">ScriptFlow</span>
           </Link>
-          <Button variant="ghost" size="icon" className="w-9 h-9" onClick={() => setMobileOpen(true)}>
-            <Menu className="w-5 h-5" />
+          <Button variant="ghost" size="icon" className="w-9 h-9 sm:w-10 sm:h-10" onClick={() => setMobileOpen(true)}>
+            <Menu className="w-4 h-4 sm:w-5 sm:h-5" />
           </Button>
         </header>
 

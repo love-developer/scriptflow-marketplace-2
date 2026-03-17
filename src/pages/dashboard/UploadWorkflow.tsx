@@ -161,22 +161,23 @@ export default function UploadWorkflow() {
         {/* Stepper */}
         <div className="flex items-center gap-1 mb-8 overflow-x-auto pb-1">
           {STEPS.map((s, i) => (
-            <div key={s} className="flex items-center gap-1 flex-shrink-0">
-              <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
+            <div key={s} className="flex items-center gap-1 flex-shrink-0 min-w-0">
+              <div className={`flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-full text-[10px] sm:text-xs font-semibold transition-all ${
                 i === step
                   ? "gradient-bg text-white"
                   : i < step
                   ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
                   : "bg-secondary text-muted-foreground"
               }`}>
-                <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                <span className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center text-[9px] sm:text-[10px] font-bold flex-shrink-0 ${
                   i === step ? "bg-white/20" : i < step ? "bg-emerald-500/20" : "bg-muted-foreground/20"
                 }`}>
                   {i < step ? "✓" : i + 1}
                 </span>
-                {s}
+                <span className="truncate hidden xs:inline sm:inline">{s}</span>
+                <span className="truncate xs:hidden sm:hidden">{s.split(' ')[0]}</span>
               </div>
-              {i < STEPS.length - 1 && <ChevronRight className="w-3 h-3 text-muted-foreground flex-shrink-0" />}
+              {i < STEPS.length - 1 && <ChevronRight className="w-3 h-3 text-muted-foreground flex-shrink-0 hidden xs:inline sm:inline" />}
             </div>
           ))}
         </div>

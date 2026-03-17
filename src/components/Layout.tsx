@@ -157,9 +157,9 @@ export function Layout({ children }: { children: ReactNode }) {
 
       {/* Footer */}
       <footer className="border-t border-border bg-card mt-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-12">
-            <div className="col-span-1 sm:col-span-2">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-8 sm:mb-12">
+            <div className="col-span-1 sm:col-span-2 lg:col-span-1">
               <Link href="/" className="font-display font-bold text-xl tracking-tight mb-3 flex items-center gap-2">
                 <div className="w-7 h-7 gradient-bg rounded-lg flex items-center justify-center">
                   <span className="text-white text-xs font-bold">SF</span>
@@ -170,25 +170,25 @@ export function Layout({ children }: { children: ReactNode }) {
                 The premium marketplace for ComfyUI AI Workflows and exclusive Roblox scripts for serious players.
               </p>
             </div>
-            <div>
-              <h4 className="font-semibold mb-4 text-sm uppercase tracking-wider text-muted-foreground">Platform</h4>
-              <ul className="space-y-2.5 text-sm">
+            <div className="lg:col-span-1">
+              <h4 className="font-semibold mb-3 sm:mb-4 text-sm uppercase tracking-wider text-muted-foreground">Platform</h4>
+              <ul className="space-y-2 sm:space-y-2.5 text-sm">
                 <li><Link href="/" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1.5"><Sparkles className="w-3.5 h-3.5" />AI Workflows</Link></li>
                 <li><Link href="/pricing" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1.5"><Gamepad2 className="w-3.5 h-3.5" />Roblox Plans</Link></li>
                 <li><Link href="/login" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1.5"><Tag className="w-3.5 h-3.5" />Sell Workflows</Link></li>
               </ul>
             </div>
-            <div>
-              <h4 className="font-semibold mb-4 text-sm uppercase tracking-wider text-muted-foreground">Legal</h4>
-              <ul className="space-y-2.5 text-sm">
+            <div className="lg:col-span-1">
+              <h4 className="font-semibold mb-3 sm:mb-4 text-sm uppercase tracking-wider text-muted-foreground">Legal</h4>
+              <ul className="space-y-2 sm:space-y-2.5 text-sm">
                 <li><Link href="#" className="text-muted-foreground hover:text-primary transition-colors">Terms of Service</Link></li>
                 <li><Link href="#" className="text-muted-foreground hover:text-primary transition-colors">Privacy Policy</Link></li>
                 <li><Link href="#" className="text-muted-foreground hover:text-primary transition-colors">Support</Link></li>
               </ul>
             </div>
           </div>
-          <div className="pt-8 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-            <span>© {new Date().getFullYear()} ScriptFlow. All rights reserved.</span>
+          <div className="pt-6 sm:pt-8 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4 text-sm text-muted-foreground">
+            <span className="text-center sm:text-left">© {new Date().getFullYear()} ScriptFlow. All rights reserved.</span>
             <div className="flex items-center gap-1.5">
               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               All systems operational

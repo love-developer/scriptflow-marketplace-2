@@ -196,3 +196,47 @@
   border-radius: 50%;
   pointer-events: none;
 }
+
+/* ── Mobile-specific utilities ───────────── */
+@media (max-width: 640px) {
+  .mobile-scroll {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+  
+  .mobile-touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .mobile-safe-area {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  .mobile-text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* ── Enhanced touch feedback ───────────── */
+.touch-feedback {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.touch-feedback:active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease-in-out;
+}
+
+/* ── Mobile-optimized spacing ───────────── */
+.mobile-spacing > * + * {
+  margin-top: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .mobile-spacing > * + * {
+    margin-top: 1rem;
+  }
+}
