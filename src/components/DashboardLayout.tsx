@@ -182,7 +182,7 @@ export function DashboardLayout({ children, role }: { children: ReactNode; role:
           </Button>
         </header>
 
-        <div className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full">
+        <div className="flex-1 p-4 sm:p-6 lg:p-8 w-full max-w-[100vw] sm:max-w-7xl">
           {children}
         </div>
       </main>
