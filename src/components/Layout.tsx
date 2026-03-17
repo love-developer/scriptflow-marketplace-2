@@ -1,14 +1,15 @@
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { useStore } from "@/lib/store";
 import { useDarkMode } from "@/lib/darkMode";
-import { LogOut, LayoutDashboard, Sun, Moon, Gamepad2, Sparkles, Tag } from "lucide-react";
+import { LogOut, LayoutDashboard, Sun, Moon, Gamepad2, Sparkles, Tag, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function Layout({ children }: { children: ReactNode }) {
   const [location] = useLocation();
   const { currentUser, logout } = useStore();
   const { dark, toggle } = useDarkMode();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const getDashboardLink = () => {
     if (!currentUser) return null;
@@ -56,6 +57,14 @@ export function Layout({ children }: { children: ReactNode }) {
 
           {/* Right side */}
           <div className="flex items-center gap-2">
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden w-9 h-9 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+            >
+              {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            </button>
+
             {/* Dark mode toggle */}
             <button
               onClick={toggle}
@@ -76,14 +85,20 @@ export function Layout({ children }: { children: ReactNode }) {
                   </Link>
                 )}
                 <div className="flex items-center gap-2 pl-2 border-l border-border ml-1">
-                  <div className="w-8 h-8 rounded-full gradient-bg flex items-center justify-center text-white text-sm font-bold shadow">
-                    {currentUser.username.charAt(0).toUpperCase()}
-                  </div>
+                  <Link href={dashLink || "/"}>
+                    <div className="w-8 h-8 rounded-full gradient-bg flex items-center justify-center text-white text-sm font-bold shadow cursor-pointer hover:opacity-80 transition-opacity">
+                      {currentUser.username.charAt(0).toUpperCase()}
+                    </div>
+                  </Link>
                   <div className="hidden sm:flex flex-col">
                     <span className="text-sm font-semibold leading-none">{currentUser.username}</span>
                     <span className="text-xs text-muted-foreground capitalize">{currentUser.role}</span>
                   </div>
-                  <Button variant="ghost" size="icon" onClick={() => logout()} title="Logout" className="w-8 h-8">
+                  <Button variant="ghost" size="icon" onClick={() => logout()} title="Logout" className="hidden sm:flex w-8 h-8">
+                    <LogOut className="w-3.5 h-3.5" />
+                  </Button>
+                  {/* Mobile logout button */}
+                  <Button variant="ghost" size="icon" onClick={() => logout()} title="Logout" className="sm:hidden w-8 h-8">
                     <LogOut className="w-3.5 h-3.5" />
                   </Button>
                 </div>
@@ -91,11 +106,13 @@ export function Layout({ children }: { children: ReactNode }) {
             ) : (
               <div className="flex items-center gap-2">
                 <Link href="/login">
-                  <Button variant="ghost" size="sm" className="h-9">Log in</Button>
+                  <Button variant="ghost" size="sm" className="hidden h-9">Log in</Button>
+                  <Button variant="ghost" size="sm" className="sm:hidden h-9 px-2">Login</Button>
                 </Link>
                 <Link href="/register">
                   <Button size="sm" className="h-9 gradient-bg text-white border-0 hover:opacity-90 shadow-md shadow-primary/20">
-                    Sign up
+                    <span className="hidden sm:inline">Sign up</span>
+                    <span className="sm:hidden">Join</span>
                   </Button>
                 </Link>
               </div>
@@ -103,20 +120,37 @@ export function Layout({ children }: { children: ReactNode }) {
           </div>
         </div>
 
-        {/* Mobile nav links */}
-        <div className="md:hidden border-t border-border/50 px-4 py-2 flex gap-1">
-          {navLinks.map(l => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                location === l.href ? "bg-primary/10 text-primary" : "text-muted-foreground"
-              }`}
-            >
-              {l.label}
-            </Link>
-          ))}
-        </div>
+        {/* Mobile menu overlay */}
+        {mobileMenuOpen && (
+          <div className="md:hidden absolute top-full left-0 right-0 bg-card border-b border-border shadow-lg z-50">
+            <div className="px-4 py-3 space-y-1">
+              {navLinks.map(l => (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`block px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    location === l.href
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                  }`}
+                >
+                  {l.label}
+                </Link>
+              ))}
+              {currentUser && dashLink && (
+                <Link
+                  href={dashLink}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                >
+                  <LayoutDashboard className="w-4 h-4" />
+                  Dashboard
+                </Link>
+              )}
+            </div>
+          </div>
+        )}
       </header>
 
       <main className="flex-1">{children}</main>

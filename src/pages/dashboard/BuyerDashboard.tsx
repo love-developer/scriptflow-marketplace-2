@@ -87,11 +87,11 @@ export default function BuyerDashboard() {
           <TrendingUp className="w-5 h-5 text-emerald-500" />
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
           {topRobloxScripts.map(script => (
             <div key={script.id} className="bg-card border border-border rounded-xl p-4 hover:border-primary/50 transition-colors">
-              <div className="flex gap-4">
-                <img src={script.image} alt={script.title} className="w-16 h-16 rounded-lg object-cover" />
+              <div className="flex flex-col sm:flex-row gap-4">
+                <img src={script.image} alt={script.title} className="w-full sm:w-16 h-16 sm:h-16 rounded-lg object-cover" />
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-sm truncate">{script.title}</h3>
                   <p className="text-xs text-muted-foreground line-clamp-2 mb-2">{script.description}</p>
@@ -126,11 +126,11 @@ export default function BuyerDashboard() {
           <TrendingUp className="w-5 h-5 text-violet-500" />
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
           {topWorkflows.map(workflow => (
             <div key={workflow.id} className="bg-card border border-border rounded-xl p-4 hover:border-primary/50 transition-colors">
-              <div className="flex gap-4">
-                <img src={workflow.image} alt={workflow.title} className="w-16 h-16 rounded-lg object-cover" />
+              <div className="flex flex-col sm:flex-row gap-4">
+                <img src={workflow.image} alt={workflow.title} className="w-full sm:w-16 h-16 sm:h-16 rounded-lg object-cover" />
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-sm truncate">{workflow.title}</h3>
                   <p className="text-xs text-muted-foreground line-clamp-2 mb-2">{workflow.description}</p>

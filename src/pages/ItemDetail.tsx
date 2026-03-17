@@ -52,7 +52,7 @@ export default function ItemDetail() {
                 </div>
               </div>
               
-              <h1 className="font-display text-4xl md:text-5xl font-bold tracking-tight mb-6">{item.title}</h1>
+              <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-6">{item.title}</h1>
               
               <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
                 {item.description}
@@ -70,22 +70,22 @@ export default function ItemDetail() {
                 </div>
               </div>
               
-              <div className="flex items-center justify-between">
-                <div className="font-display text-4xl font-bold">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-8 border-b border-border">
+                <div className="font-display text-3xl sm:text-4xl font-bold">
                   ${item.price.toFixed(2)}
                 </div>
-                <div className="flex gap-4">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                   {isWorkflow && (
-                    <Button variant="outline" size="lg" className="h-14 px-6 text-base rounded-xl" onClick={handleTest}>
+                    <Button variant="outline" size="lg" className="h-14 px-6 text-base rounded-xl w-full sm:w-auto" onClick={handleTest}>
                       <TestTube className="w-5 h-5 mr-2" /> Test Drive
                     </Button>
                   )}
                   {hasPurchased ? (
-                    <Button variant="secondary" size="lg" className="h-14 px-8 text-base rounded-xl cursor-default">
+                    <Button variant="secondary" size="lg" className="h-14 px-8 text-base rounded-xl cursor-default w-full sm:w-auto">
                       <CheckCircle2 className="w-5 h-5 mr-2 text-primary" /> Owned
                     </Button>
                   ) : (
-                    <Button size="lg" className="h-14 px-8 text-base rounded-xl" onClick={handlePurchase}>
+                    <Button size="lg" className="h-14 px-8 text-base rounded-xl w-full sm:w-auto" onClick={handlePurchase}>
                       <Download className="w-5 h-5 mr-2" /> Buy Now
                     </Button>
                   )}

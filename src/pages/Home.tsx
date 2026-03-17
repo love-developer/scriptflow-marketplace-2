@@ -40,7 +40,7 @@ export default function Home() {
               Premium ComfyUI Workflows & Roblox Scripts
             </div>
 
-            <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight mb-6 leading-[1.1]">
+            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 leading-[1.1]">
               The marketplace for{" "}
               <span className="gradient-text">pro-grade</span>
               <br className="hidden sm:block" />
@@ -53,15 +53,15 @@ export default function Home() {
             </p>
 
             {/* Search bar */}
-            <div className="max-w-2xl mx-auto flex items-center bg-card border border-border rounded-2xl shadow-xl shadow-black/5 p-1.5 gap-2 mb-8">
+            <div className="max-w-2xl mx-auto flex flex-col sm:flex-row items-center bg-card border border-border rounded-2xl shadow-xl shadow-black/5 p-1.5 gap-2 mb-8">
               <Search className="w-5 h-5 text-muted-foreground ml-3 flex-shrink-0" />
               <Input
-                className="flex-1 border-0 shadow-none focus-visible:ring-0 text-base bg-transparent h-11 pl-2"
+                className="flex-1 border-0 shadow-none focus-visible:ring-0 text-base bg-transparent h-11 pl-2 w-full"
                 placeholder="Search workflows by name or model..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
               />
-              <Button size="default" className="gradient-bg text-white border-0 hover:opacity-90 rounded-xl h-11 px-6 flex-shrink-0">
+              <Button size="default" className="gradient-bg text-white border-0 hover:opacity-90 rounded-xl h-11 px-6 flex-shrink-0 w-full sm:w-auto">
                 Search
               </Button>
             </div>
