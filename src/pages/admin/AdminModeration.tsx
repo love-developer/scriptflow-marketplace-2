@@ -52,7 +52,7 @@ export function AdminModeration() {
         <p className="text-muted-foreground mt-2">Review and action flagged content reports.</p>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         <div className="bg-card border border-border rounded-xl p-4 text-center">
           <p className="text-2xl font-bold text-yellow-600">{pending}</p>
           <p className="text-xs text-muted-foreground mt-1">Pending Review</p>
@@ -76,25 +76,44 @@ export function AdminModeration() {
       ) : (
         <div className="space-y-4">
           {reports.map(report => (
-            <div key={report.id} className="bg-card border border-border rounded-2xl p-6">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Flag className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                    <span className="font-semibold truncate">{report.title}</span>
-                    <Badge variant="outline" className="text-xs flex-shrink-0">{TYPE_LABEL[report.type]}</Badge>
+            <div key={report.id} className="bg-card border border-border rounded-2xl p-4">
+              <div className="space-y-3">
+                {/* Header with title and type badge */}
+                <div className="flex items-start gap-2">
+                  <Flag className="w-4 h-4 text-muted-foreground flex-shrink-0 mt-0.5" />
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold truncate pr-2">{report.title}</h3>
                   </div>
-                  <p className="text-sm text-muted-foreground mb-2">{report.reason}</p>
-                  <p className="text-xs text-muted-foreground">Reported by <span className="font-medium">{report.reportedBy}</span> · {report.date}</p>
+                  <Badge variant="outline" className="text-xs flex-shrink-0">
+                    {TYPE_LABEL[report.type]}
+                  </Badge>
                 </div>
-                <div className="flex flex-col items-end gap-3 flex-shrink-0">
-                  <Badge variant="outline" className={`text-xs ${STATUS_STYLES[report.status]}`}>{report.status}</Badge>
-                  {report.status === "Pending" && (
-                    <div className="flex gap-2">
-                      <Button size="sm" variant="destructive" onClick={() => updateStatus(report.id, "Removed")}>Remove</Button>
-                      <Button size="sm" variant="outline" onClick={() => updateStatus(report.id, "Dismissed")}>Dismiss</Button>
-                    </div>
-                  )}
+
+                {/* Reason text */}
+                <p className="text-sm text-muted-foreground pl-6 line-clamp-3">
+                  {report.reason}
+                </p>
+
+                {/* Footer with reporter info, status, and actions */}
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pl-6">
+                  <div className="text-xs text-muted-foreground">
+                    Reported by <span className="font-medium">{report.reportedBy}</span> · {report.date}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className={`text-xs ${STATUS_STYLES[report.status]}`}>
+                      {report.status}
+                    </Badge>
+                    {report.status === "Pending" && (
+                      <div className="flex gap-1">
+                        <Button size="sm" variant="destructive" onClick={() => updateStatus(report.id, "Removed")}>
+                          Remove
+                        </Button>
+                        <Button size="sm" variant="outline" onClick={() => updateStatus(report.id, "Dismissed")}>
+                          Dismiss
+                        </Button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

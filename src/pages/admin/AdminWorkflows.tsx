@@ -68,25 +68,25 @@ export function AdminWorkflows() {
             <table className="w-full text-sm text-left">
               <thead className="bg-secondary/50 border-b border-border">
                 <tr>
-                  <th className="px-4 py-3 font-medium text-muted-foreground">Title</th>
-                  <th className="px-4 py-3 font-medium text-muted-foreground">Seller</th>
-                  <th className="px-4 py-3 font-medium text-muted-foreground">Type</th>
-                  <th className="px-4 py-3 font-medium text-muted-foreground">Price</th>
-                  <th className="px-4 py-3 font-medium text-muted-foreground">Status</th>
-                  <th className="px-4 py-3 font-medium text-muted-foreground text-right">Actions</th>
+                  <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">Title</th>
+                  <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">Seller</th>
+                  <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">Type</th>
+                  <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">Price</th>
+                  <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">Status</th>
+                  <th className="px-4 py-3 font-medium text-muted-foreground text-right whitespace-nowrap">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
                 {items.map(item => (
                   <tr key={item.id} className="hover:bg-secondary/20 transition-colors">
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 whitespace-nowrap">
                       <p className="font-medium">{item.title}</p>
                       <p className="text-xs text-muted-foreground mt-0.5 max-w-[200px] truncate">{item.category}</p>
                     </td>
-                    <td className="px-4 py-3 text-muted-foreground">{item.sellerName}</td>
-                    <td className="px-4 py-3 text-muted-foreground capitalize text-xs">{item.type.replace("_", " ")}</td>
-                    <td className="px-4 py-3 font-medium">${item.price.toFixed(2)}</td>
-                    <td className="px-4 py-3">{statusBadge(item.status)}</td>
+                    <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">{item.sellerName}</td>
+                    <td className="px-4 py-3 text-muted-foreground capitalize text-xs whitespace-nowrap">{item.type.replace("_", " ")}</td>
+                    <td className="px-4 py-3 font-medium whitespace-nowrap">${item.price.toFixed(2)}</td>
+                    <td className="px-4 py-3 whitespace-nowrap">{statusBadge(item.status)}</td>
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-1">
                         {item.status !== "Approved" && (

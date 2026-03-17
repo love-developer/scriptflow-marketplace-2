@@ -354,31 +354,31 @@ export function AdminRobloxScripts() {
           <table className="w-full text-sm text-left">
             <thead className="bg-secondary/50 border-b border-border">
               <tr>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Title</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Game</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Category</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Tier</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Downloads</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Status</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground text-right">Actions</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">Title</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">Game</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">Category</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">Tier</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">Downloads</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">Status</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground text-right whitespace-nowrap">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
               {scripts.map(script => (
                 <tr key={script.id} className="hover:bg-secondary/20 transition-colors">
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 whitespace-nowrap">
                     <div>
                       <div className="font-medium">{script.title}</div>
                       <div className="text-xs text-muted-foreground mt-1 max-w-xs truncate">{script.description}</div>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-muted-foreground">{script.supportedGame}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{script.category}</td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">{script.supportedGame}</td>
+                  <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">{script.category}</td>
+                  <td className="px-4 py-3 whitespace-nowrap">
                     <Badge variant="outline" className={`text-xs ${TIER_BADGE[script.tier]}`}>{script.tier}</Badge>
                   </td>
-                  <td className="px-4 py-3 text-muted-foreground">{script.downloads.toLocaleString()}</td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">{script.downloads.toLocaleString()}</td>
+                  <td className="px-4 py-3 whitespace-nowrap">
                     <Badge variant="outline" className={script.enabled ? "text-green-700 border-green-300 bg-green-50 dark:bg-green-900/20 dark:text-green-400" : "bg-secondary text-muted-foreground"}>
                       {script.enabled ? "Enabled" : "Disabled"}
                     </Badge>

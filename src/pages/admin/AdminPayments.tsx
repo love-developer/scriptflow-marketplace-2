@@ -73,28 +73,28 @@ export function AdminPayments() {
           <table className="w-full text-sm text-left">
             <thead className="bg-secondary/50 border-b border-border">
               <tr>
-                <th className="px-4 py-3 font-medium text-muted-foreground">ID</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">User</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Type</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Item</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Amount</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Status</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Date</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground text-right">Action</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">ID</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">User</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">Type</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">Item</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">Amount</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">Status</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">Date</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground text-right whitespace-nowrap">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
               {MOCK_TRANSACTIONS.map(tx => (
                 <tr key={tx.id} className="hover:bg-secondary/20 transition-colors">
-                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground">#{tx.id}</td>
-                  <td className="px-4 py-3 font-medium">{tx.user}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{tx.type}</td>
-                  <td className="px-4 py-3 text-muted-foreground max-w-[140px] truncate">{tx.item}</td>
-                  <td className="px-4 py-3 font-medium">${tx.amount.toFixed(2)}</td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground whitespace-nowrap">#{tx.id}</td>
+                  <td className="px-4 py-3 font-medium whitespace-nowrap">{tx.user}</td>
+                  <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">{tx.type}</td>
+                  <td className="px-4 py-3 text-muted-foreground max-w-[140px] truncate whitespace-nowrap">{tx.item}</td>
+                  <td className="px-4 py-3 font-medium whitespace-nowrap">${tx.amount.toFixed(2)}</td>
+                  <td className="px-4 py-3 whitespace-nowrap">
                     <Badge variant="outline" className={`text-xs ${STATUS_STYLES[tx.status]}`}>{tx.status}</Badge>
                   </td>
-                  <td className="px-4 py-3 text-muted-foreground text-xs">{tx.date}</td>
+                  <td className="px-4 py-3 text-muted-foreground text-xs whitespace-nowrap">{tx.date}</td>
                   <td className="px-4 py-3 text-right">
                     {tx.type === "Payout Request" && tx.status === "Pending" && (
                       <Button variant="ghost" size="sm" onClick={() => approveWithdrawal(tx.id)}>

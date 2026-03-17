@@ -166,7 +166,7 @@ export default function BuyerDashboard() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border bg-secondary/30">
-                  <th className="text-left px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Item</th>
+                  <th className="text-left px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Item</th>
                   <th className="text-left px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider hidden sm:table-cell">Date</th>
                   <th className="text-left px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Price</th>
                   <th className="text-right px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Action</th>
@@ -176,7 +176,7 @@ export default function BuyerDashboard() {
                 {myPurchases.map(purchase => (
                   <tr key={purchase.id} className="hover:bg-secondary/20 transition-colors">
                     <td className="px-6 py-4">
-                      <p className="font-medium">{purchase.itemTitle}</p>
+                      <p className="font-medium whitespace-nowrap">{purchase.itemTitle}</p>
                       <span className="inline-block mt-0.5 px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-semibold rounded-full uppercase tracking-wider">
                         {purchase.type === "ai_workflow" ? "AI Workflow" : "Roblox Script"}
                       </span>

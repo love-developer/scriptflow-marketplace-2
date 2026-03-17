@@ -43,12 +43,12 @@ export function AdminUsers() {
           <table className="w-full text-sm text-left">
             <thead className="bg-secondary/50 border-b border-border">
               <tr>
-                <th className="px-4 py-3 font-medium text-muted-foreground">User</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Email</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Role</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Level</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Joined</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground text-right">Actions</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">User</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">Email</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">Role</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">Level</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">Joined</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground text-right whitespace-nowrap">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -66,8 +66,8 @@ export function AdminUsers() {
                   <td className="px-4 py-3">
                     <Badge className={`text-xs ${ROLE_BADGE[user.role]}`}>{user.role}</Badge>
                   </td>
-                  <td className="px-4 py-3 text-muted-foreground text-xs">{user.level}</td>
-                  <td className="px-4 py-3 text-muted-foreground text-xs">
+                  <td className="px-4 py-3 text-muted-foreground text-xs whitespace-nowrap">{user.level}</td>
+                  <td className="px-4 py-3 text-muted-foreground text-xs whitespace-nowrap">
                     {format(new Date(user.joinDate), "MMM d, yyyy")}
                   </td>
                   <td className="px-4 py-3 text-right">

@@ -68,18 +68,18 @@ export default function BuyerSupport() {
     <DashboardLayout role="buyer">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Support Tickets</h1>
+          <h1 className="text-2xl lg:text-3xl font-bold">Support Tickets</h1>
           <p className="text-muted-foreground mt-2">Get help from our support team.</p>
         </div>
-        <Button onClick={() => setShowForm(v => !v)}>
-          <Plus className="w-4 h-4 mr-2" />
+        <Button size="sm" onClick={() => setShowForm(v => !v)} className="gap-1 px-2">
+          <Plus className="w-4 h-4 mr-1" />
           New Ticket
         </Button>
       </div>
 
       {showForm && (
         <div className="bg-card border border-border rounded-2xl p-6 mb-8">
-          <h2 className="font-semibold text-lg mb-4">Create New Ticket</h2>
+          <h2 className="font-semibold text-sm lg:text-base mb-4">Create New Ticket</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="subject">Subject</Label>
@@ -100,9 +100,9 @@ export default function BuyerSupport() {
                 onChange={e => setMessage(e.target.value)} 
               />
             </div>
-            <div className="flex gap-3">
-              <Button type="submit" disabled={loading}>{loading ? "Submitting..." : "Submit Ticket"}</Button>
-              <Button type="button" variant="outline" onClick={() => setShowForm(false)}>Cancel</Button>
+            <div className="flex gap-2">
+              <Button type="submit" disabled={loading} size="sm" className="gap-1 px-2">{loading ? "Submitting..." : "Submit Ticket"}</Button>
+              <Button type="button" variant="outline" onClick={() => setShowForm(false)} size="sm" className="px-2">Cancel</Button>
             </div>
           </form>
         </div>
@@ -207,7 +207,7 @@ export default function BuyerSupport() {
                               size="sm" 
                               onClick={() => handleSendReply(ticket.id)}
                               disabled={!replyMessages[ticket.id]?.trim()}
-                              className="gap-2"
+                              className="gap-1 px-2"
                             >
                               <Send className="w-3 h-3" />
                               Send Reply
@@ -216,6 +216,7 @@ export default function BuyerSupport() {
                               size="sm" 
                               variant="outline"
                               onClick={() => setReplyMessages(prev => ({ ...prev, [ticket.id]: "" }))}
+                              className="px-2"
                             >
                               Clear
                             </Button>

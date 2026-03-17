@@ -93,9 +93,9 @@ export function SellerDashboard() {
       {/* Workflows table */}
       <div className="bg-card border border-border rounded-2xl overflow-hidden">
         <div className="px-6 py-4 border-b border-border flex items-center justify-between">
-          <h3 className="font-bold text-lg">My Workflows</h3>
+          <h3 className="font-bold text-sm lg:text-base">My Workflows</h3>
           <Link href="/seller-dashboard/items">
-            <Button variant="ghost" size="sm" className="text-muted-foreground gap-1">
+            <Button variant="ghost" size="sm" className="text-muted-foreground gap-1 px-2">
               View all <ArrowUpRight className="w-3.5 h-3.5" />
             </Button>
           </Link>
@@ -130,8 +130,8 @@ export function SellerDashboard() {
                           <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
                         </div>
                         <div>
-                          <p className="font-medium leading-tight">{item.title}</p>
-                          <p className="text-xs text-muted-foreground">{item.category}</p>
+                          <p className="font-medium leading-tight whitespace-nowrap">{item.title}</p>
+                          <p className="text-xs text-muted-foreground whitespace-nowrap">{item.category}</p>
                         </div>
                       </div>
                     </td>

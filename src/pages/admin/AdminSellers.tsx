@@ -43,12 +43,12 @@ export function AdminSellers() {
             <table className="w-full text-sm text-left">
               <thead className="bg-secondary/50 border-b border-border">
                 <tr>
-                  <th className="px-4 py-3 font-medium text-muted-foreground">Seller</th>
-                  <th className="px-4 py-3 font-medium text-muted-foreground">Level</th>
-                  <th className="px-4 py-3 font-medium text-muted-foreground">Sales</th>
-                  <th className="px-4 py-3 font-medium text-muted-foreground">Workflows</th>
-                  <th className="px-4 py-3 font-medium text-muted-foreground">Est. Revenue</th>
-                  <th className="px-4 py-3 font-medium text-muted-foreground text-right">Actions</th>
+                  <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">Seller</th>
+                  <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">Level</th>
+                  <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">Sales</th>
+                  <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">Workflows</th>
+                  <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">Est. Revenue</th>
+                  <th className="px-4 py-3 font-medium text-muted-foreground text-right whitespace-nowrap">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -57,7 +57,7 @@ export function AdminSellers() {
                   const revenue = seller.sales * 24.99;
                   return (
                     <tr key={seller.id} className="hover:bg-secondary/20 transition-colors">
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-3 whitespace-nowrap">
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center font-semibold text-sm flex-shrink-0">
                             {seller.username.charAt(0)}
@@ -68,12 +68,12 @@ export function AdminSellers() {
                           </div>
                         </div>
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-3 whitespace-nowrap">
                         <Badge variant="outline" className="text-xs">{seller.level}</Badge>
                       </td>
-                      <td className="px-4 py-3 font-medium">{seller.sales}</td>
-                      <td className="px-4 py-3 text-muted-foreground">{sellerItems.length}</td>
-                      <td className="px-4 py-3 font-medium">${revenue.toFixed(0)}</td>
+                      <td className="px-4 py-3 font-medium whitespace-nowrap">{seller.sales}</td>
+                      <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">{sellerItems.length}</td>
+                      <td className="px-4 py-3 font-medium whitespace-nowrap">${revenue.toFixed(0)}</td>
                       <td className="px-4 py-3 text-right">
                         <div className="flex items-center justify-end gap-2">
                           <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive" onClick={() => suspendSeller(seller.id, seller.username)}>

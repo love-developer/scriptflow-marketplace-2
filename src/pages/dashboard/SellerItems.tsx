@@ -28,12 +28,12 @@ export default function SellerItems() {
     <DashboardLayout role="seller">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">My Workflows</h1>
+          <h1 className="text-2xl lg:text-3xl font-bold">My Workflows</h1>
           <p className="text-muted-foreground mt-2">Manage all your submitted items.</p>
         </div>
         <Link href="/seller-dashboard/upload">
-          <Button>
-            <Plus className="w-4 h-4 mr-2" />
+          <Button size="sm" className="gap-1 px-2">
+            <Plus className="w-4 h-4 mr-1" />
             Upload New
           </Button>
         </Link>
@@ -54,9 +54,9 @@ export default function SellerItems() {
             <table className="w-full text-sm text-left">
               <thead className="bg-secondary/50 border-b border-border">
                 <tr>
-                  <th className="px-4 py-3 font-medium text-muted-foreground">Title</th>
-                  <th className="px-4 py-3 font-medium text-muted-foreground">Type</th>
-                  <th className="px-4 py-3 font-medium text-muted-foreground">Category</th>
+                  <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">Title</th>
+                  <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">Type</th>
+                  <th className="px-4 py-3 font-medium text-muted-foreground whitespace-nowrap">Category</th>
                   <th className="px-4 py-3 font-medium text-muted-foreground">Price</th>
                   <th className="px-4 py-3 font-medium text-muted-foreground">Status</th>
                   <th className="px-4 py-3 font-medium text-muted-foreground">Tests</th>
@@ -66,9 +66,9 @@ export default function SellerItems() {
               <tbody className="divide-y divide-border">
                 {myItems.map(item => (
                   <tr key={item.id} className="hover:bg-secondary/20 transition-colors">
-                    <td className="px-4 py-3 font-medium">{item.title}</td>
-                    <td className="px-4 py-3 text-muted-foreground capitalize">{item.type.replace("_", " ")}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{item.category}</td>
+                    <td className="px-4 py-3 font-medium whitespace-nowrap">{item.title}</td>
+                    <td className="px-4 py-3 text-muted-foreground capitalize whitespace-nowrap">{item.type.replace("_", " ")}</td>
+                    <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">{item.category}</td>
                     <td className="px-4 py-3 font-medium">${item.price.toFixed(2)}</td>
                     <td className="px-4 py-3">{statusBadge(item.status)}</td>
                     <td className="px-4 py-3 text-muted-foreground">{item.testCount.toLocaleString()}</td>

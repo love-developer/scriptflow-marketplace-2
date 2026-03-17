@@ -106,7 +106,7 @@ export function Layout({ children }: { children: ReactNode }) {
             ) : (
               <div className="flex items-center gap-2">
                 <Link href="/login">
-                  <Button variant="ghost" size="sm" className="hidden h-9">Log in</Button>
+                  <Button variant="ghost" size="sm" className="hidden sm:flex h-9">Log in</Button>
                   <Button variant="ghost" size="sm" className="sm:hidden h-9 px-2">Login</Button>
                 </Link>
                 <Link href="/register">
