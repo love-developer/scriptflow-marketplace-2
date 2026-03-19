@@ -1,6 +1,6 @@
 {
-  "name": "@workspace/marketplace",
-  "version": "0.0.0",
+  "name": "scriptflow-marketplace",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {

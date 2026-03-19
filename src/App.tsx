@@ -14,6 +14,7 @@ import { Login, Register } from "@/pages/Auth";
 import ItemDetail from "@/pages/ItemDetail";
 import TestInterface from "@/pages/TestInterface";
 import SellerProfile from "@/pages/SellerProfile";
+import SellerApplication from "@/pages/SellerApplication";
 import BuyerDashboard from "@/pages/dashboard/BuyerDashboard";
 import BuyerSupport from "@/pages/dashboard/BuyerSupport";
 import BuyerSubscriptions from "@/pages/dashboard/BuyerSubscriptions";
@@ -21,13 +22,17 @@ import { SellerDashboard } from "@/pages/dashboard/SellerDashboard";
 import SellerItems from "@/pages/dashboard/SellerItems";
 import SellerAnalytics from "@/pages/dashboard/SellerAnalytics";
 import UploadWorkflow from "@/pages/dashboard/UploadWorkflow";
+import SellerWithdrawals from "@/pages/dashboard/SellerWithdrawals";
 import { AdminDashboard } from "@/pages/admin/AdminDashboard";
 import { AdminItems } from "@/pages/admin/AdminItems";
 import { AdminUsers } from "@/pages/admin/AdminUsers";
 import { AdminSellers } from "@/pages/admin/AdminSellers";
+import AdminSellerApplications from "@/pages/admin/AdminSellerApplications";
+import AdminUpload from "@/pages/admin/AdminUpload";
 import { AdminWorkflows } from "@/pages/admin/AdminWorkflows";
 import { AdminRobloxScripts } from "@/pages/admin/AdminRobloxScripts";
 import { AdminPayments } from "@/pages/admin/AdminPayments";
+import AdminWithdrawals from "@/pages/admin/AdminWithdrawals";
 import { AdminSupport } from "@/pages/admin/AdminSupport";
 import { AdminModeration } from "@/pages/admin/AdminModeration";
 import NotFound from "@/pages/not-found";
@@ -82,6 +87,7 @@ function Router() {
       <Route path="/item/:id" component={(props) => <RouteWithTransition component={ItemDetail} {...props} />} />
       <Route path="/test/:id" component={(props) => <RouteWithTransition component={TestInterface} {...props} />} />
       <Route path="/creator/:username" component={(props) => <RouteWithTransition component={SellerProfile} {...props} />} />
+      <Route path="/become-seller" component={(props) => <RouteWithTransition component={SellerApplication} {...props} />} />
 
       {/* Buyer Routes */}
       <Route path="/dashboard">
@@ -122,6 +128,11 @@ function Router() {
           <UploadWorkflow />
         </ProtectedRoute>
       </Route>
+      <Route path="/seller-dashboard/withdrawals">
+        <ProtectedRoute allowedRoles={["seller", "admin"]}>
+          <SellerWithdrawals />
+        </ProtectedRoute>
+      </Route>
 
       {/* Admin Routes */}
       <Route path="/admin">
@@ -137,6 +148,16 @@ function Router() {
       <Route path="/admin/sellers">
         <ProtectedRoute allowedRoles={["admin"]}>
           <AdminSellers />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/seller-applications">
+        <ProtectedRoute allowedRoles={["admin"]}>
+          <AdminSellerApplications />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/upload">
+        <ProtectedRoute allowedRoles={["admin"]}>
+          <AdminUpload />
         </ProtectedRoute>
       </Route>
       <Route path="/admin/workflows">
@@ -157,6 +178,11 @@ function Router() {
       <Route path="/admin/payments">
         <ProtectedRoute allowedRoles={["admin"]}>
           <AdminPayments />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/withdrawals">
+        <ProtectedRoute allowedRoles={["admin"]}>
+          <AdminWithdrawals />
         </ProtectedRoute>
       </Route>
       <Route path="/admin/support">

@@ -162,6 +162,74 @@ export default function Home() {
         )}
       </section>
 
+      {/* Become a Seller CTA */}
+      <section className="bg-gradient-to-r from-violet-50 to-purple-50 border-y border-violet-200 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-4xl mx-auto">
+            <div className="inline-flex items-center gap-2 bg-violet-100 border border-violet-300 text-violet-700 px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold mb-6">
+              <Sparkles className="w-3.5 h-3.5" />
+              Join Our Creator Community
+            </div>
+            
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+              Become a 
+              <span className="gradient-text"> Workflow Seller</span>
+            </h2>
+            
+            <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+              Share your ComfyUI workflows with thousands of users and earn 70% commission on every sale. 
+              Join our community of professional AI workflow creators today!
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div className="bg-white/60 backdrop-blur border border-violet-200 rounded-xl p-6">
+                <div className="w-12 h-12 bg-emerald-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                  <Zap className="w-6 h-6 text-emerald-600" />
+                </div>
+                <h3 className="font-bold text-lg mb-2">70% Commission</h3>
+                <p className="text-sm text-muted-foreground">
+                  Keep the majority of your earnings with our competitive commission structure
+                </p>
+              </div>
+              
+              <div className="bg-white/60 backdrop-blur border border-violet-200 rounded-xl p-6">
+                <div className="w-12 h-12 bg-blue-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                  <Users className="w-6 h-6 text-blue-600" />
+                </div>
+                <h3 className="font-bold text-lg mb-2">12K+ Buyers</h3>
+                <p className="text-sm text-muted-foreground">
+                  Access our growing community of active workflow purchasers
+                </p>
+              </div>
+              
+              <div className="bg-white/60 backdrop-blur border border-violet-200 rounded-xl p-6">
+                <div className="w-12 h-12 bg-purple-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                  <ShieldCheck className="w-6 h-6 text-purple-600" />
+                </div>
+                <h3 className="font-bold text-lg mb-2">Easy Upload</h3>
+                <p className="text-sm text-muted-foreground">
+                  Simple upload process with instant approval for quality workflows
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/become-seller">
+                <Button size="lg" className="gradient-bg text-white border-0 hover:opacity-90 shadow-lg shadow-primary/20 gap-2">
+                  <Sparkles className="w-5 h-5" />
+                  Apply to Become a Seller
+                </Button>
+              </Link>
+              
+              <Button size="lg" variant="outline" className="gap-2">
+                <Gamepad2 className="w-5 h-5" />
+                Learn More
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Features section */}
       <section className="border-t border-border bg-secondary/30 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

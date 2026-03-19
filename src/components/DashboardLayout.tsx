@@ -4,7 +4,7 @@ import { useStore } from "@/lib/store";
 import { useDarkMode } from "@/lib/darkMode";
 import {
   LayoutDashboard, Package, ShoppingBag, Users, CreditCard, LifeBuoy, ShieldAlert, FileCode2,
-  LogOut, Menu, Upload, Award, FileText, BarChart2,
+  LogOut, Menu, Upload, Award, FileText, BarChart2, DollarSign,
   Sun, Moon, ChevronRight, Sparkles
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -35,6 +35,7 @@ export function DashboardLayout({ children, role }: { children: ReactNode; role:
       { name: "Overview", href: "/seller-dashboard", icon: LayoutDashboard },
       { name: "My Workflows", href: "/seller-dashboard/items", icon: Package },
       { name: "Analytics", href: "/seller-dashboard/analytics", icon: BarChart2 },
+      { name: "Withdrawals", href: "/seller-dashboard/withdrawals", icon: DollarSign },
       { name: "Upload Workflow", href: "/seller-dashboard/upload", icon: Upload },
     ];
   } else if (role === "admin") {
@@ -45,6 +46,7 @@ export function DashboardLayout({ children, role }: { children: ReactNode; role:
       { name: "Workflows", href: "/admin/workflows", icon: FileText, section: "Content" },
       { name: "Roblox Scripts", href: "/admin/roblox-scripts", icon: FileCode2, section: "Content" },
       { name: "Payments", href: "/admin/payments", icon: CreditCard, section: "Finance" },
+      { name: "Withdrawals", href: "/admin/withdrawals", icon: DollarSign, section: "Finance" },
       { name: "Support", href: "/admin/support", icon: LifeBuoy, section: "Operations" },
       { name: "Moderation", href: "/admin/moderation", icon: ShieldAlert, section: "Operations" },
     ];
