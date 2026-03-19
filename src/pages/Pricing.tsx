@@ -6,6 +6,7 @@ import { Link } from "wouter";
 import { CheckCircle2, Crown, Shield } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { toast } from "sonner";
+import { useLocation } from "wouter";
 
 const PLANS = [
   {
@@ -59,13 +60,14 @@ const PLANS = [
     badge: "Best Value",
     iconBg: "bg-purple-100",
     iconColor: "text-purple-600",
-    value: 'Premium+'
+    value: 'PremiumPlus'
   },
 ];
 
 export default function Pricing() {
-  const { currentUser, upgradeSubscription } = useStore();
+  const { currentUser } = useStore();
   const [yearly, setYearly] = useState(false);
+  const [, setLocation] = useLocation();
 
   const handleSubscribe = (planName: string) => {
     console.log('Pricing page - handleSubscribe called with:', planName);
@@ -75,16 +77,8 @@ export default function Pricing() {
       return;
     }
     
-    // Handle subscription change directly without payment page
-    upgradeSubscription(planName as any);
-    
-    if (planName === 'Free') {
-      toast.success("Successfully downgraded to Free plan!");
-    } else if (planName === 'Premium') {
-      toast.success("Successfully upgraded to Premium plan!");
-    } else if (planName === 'Premium+') {
-      toast.success("Successfully upgraded to Premium+ plan!");
-    }
+    // Redirect to subscription payment page with query parameter
+    setLocation(`/subscription-payment?plan=${planName}`);
   };
 
   return (

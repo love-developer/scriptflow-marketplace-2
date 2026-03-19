@@ -285,7 +285,7 @@ export default function PaymentMethods() {
                     placeholder="1234 5678 9012 3456"
                     value={newMethod.cardNumber}
                     onChange={(e) => setNewMethod({ ...newMethod, cardNumber: e.target.value })}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-transparent"
                   />
                 </div>
                 
@@ -297,7 +297,7 @@ export default function PaymentMethods() {
                       placeholder="MM/YY"
                       value={newMethod.expiry}
                       onChange={(e) => setNewMethod({ ...newMethod, expiry: e.target.value })}
-                      className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-transparent"
                     />
                   </div>
                   <div>
@@ -307,7 +307,7 @@ export default function PaymentMethods() {
                       placeholder="123"
                       value={newMethod.cvv}
                       onChange={(e) => setNewMethod({ ...newMethod, cvv: e.target.value })}
-                      className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-transparent"
                     />
                   </div>
                 </div>
@@ -319,7 +319,7 @@ export default function PaymentMethods() {
                     placeholder="John Doe"
                     value={newMethod.holderName}
                     onChange={(e) => setNewMethod({ ...newMethod, holderName: e.target.value })}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-transparent"
                   />
                 </div>
               </div>
@@ -335,7 +335,7 @@ export default function PaymentMethods() {
                     placeholder="Bank of America"
                     value={newMethod.bankName}
                     onChange={(e) => setNewMethod({ ...newMethod, bankName: e.target.value })}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-transparent"
                   />
                 </div>
                 
@@ -346,7 +346,7 @@ export default function PaymentMethods() {
                     placeholder="123456789"
                     value={newMethod.accountNumber}
                     onChange={(e) => setNewMethod({ ...newMethod, accountNumber: e.target.value })}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-transparent"
                   />
                 </div>
 
@@ -357,7 +357,7 @@ export default function PaymentMethods() {
                     placeholder="123456789"
                     value={newMethod.routingNumber}
                     onChange={(e) => setNewMethod({ ...newMethod, routingNumber: e.target.value })}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-transparent"
                   />
                 </div>
               </div>

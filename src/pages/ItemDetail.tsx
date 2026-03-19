@@ -24,8 +24,8 @@ export default function ItemDetail() {
       setLocation('/login');
       return;
     }
-    // Redirect to payment page for workflow purchase
-    window.location.href = `/payment?item=${item.id}`;
+    // Navigate to payment page for workflow purchase
+    setLocation(`/payment?item=${item.id}`);
   };
 
   const handleTest = () => {

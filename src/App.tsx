@@ -20,6 +20,8 @@ import BuyerDashboard from "@/pages/dashboard/BuyerDashboard";
 import BuyerSupport from "@/pages/dashboard/BuyerSupport";
 import BuyerSubscriptions from "@/pages/dashboard/BuyerSubscriptions";
 import PaymentMethods from "@/pages/PaymentMethods";
+import Payment from "@/pages/Payment";
+import SubscriptionPayment from "@/pages/SubscriptionPayment";
 import { SellerDashboard } from "@/pages/dashboard/SellerDashboard";
 import SellerItems from "@/pages/dashboard/SellerItems";
 import SellerAnalytics from "@/pages/dashboard/SellerAnalytics";
@@ -88,6 +90,8 @@ function Router() {
       <Route path="/login" component={(props) => <RouteWithTransition component={Login} {...props} />} />
       <Route path="/register" component={(props) => <RouteWithTransition component={Register} {...props} />} />
       <Route path="/item/:id" component={(props) => <RouteWithTransition component={ItemDetail} {...props} />} />
+      <Route path="/payment" component={(props) => <RouteWithTransition component={Payment} {...props} />} />
+      <Route path="/subscription-payment" component={(props) => <RouteWithTransition component={SubscriptionPayment} {...props} />} />
       <Route path="/test/:id" component={(props) => <RouteWithTransition component={TestInterface} {...props} />} />
       <Route path="/creator/:username" component={(props) => <RouteWithTransition component={SellerProfile} {...props} />} />
       <Route path="/become-seller" component={(props) => <RouteWithTransition component={SellerApplication} {...props} />} />
