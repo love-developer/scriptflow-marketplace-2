@@ -25,7 +25,9 @@ export default function Payment() {
     holderName: ''
   });
   
-  const itemId = params?.item;
+  // Get item ID from query parameter
+  const urlParams = new URLSearchParams(window.location.search);
+  const itemId = urlParams.get('item');
   const item = items.find(i => i.id === itemId);
   const paymentMethods = currentUser?.paymentMethods || [];
 
