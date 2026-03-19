@@ -24,6 +24,8 @@ export default function TestInterface() {
   const [resultType, setResultType] = useState<'image' | 'video'>('image');
   const [progress, setProgress] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [generationInterval, setGenerationInterval] = useState<NodeJS.Timeout | null>(null);
+  const [pausedProgress, setPausedProgress] = useState(0);
   
   const item = items.find(i => i.id === params?.id);
   
@@ -60,6 +62,7 @@ export default function TestInterface() {
         if (p >= 100) {
           clearInterval(interval);
           setIsGenerating(false);
+          setGenerationInterval(null);
           
           // Generate result based on workflow type
           const isVideo = workflowType === 'T2V' || workflowType === 'I2V';
@@ -86,22 +89,87 @@ export default function TestInterface() {
           
           return 100;
         }
-        return p + Math.floor(Math.random() * 15) +5;
+        // Ensure progress doesn't exceed 100
+        const newProgress = Math.min(p + Math.floor(Math.random() * 15) + 5, 100);
+        return newProgress;
       });
     }, 500);
+    setGenerationInterval(interval);
   };
 
   const handlePause = () => {
-    setIsPaused(!isPaused);
+    if (isGenerating && generationInterval) {
+      if (isPaused) {
+        // Resume generation
+        setIsPaused(false);
+        
+        // First set progress to stored paused progress, then start interval
+        setProgress(pausedProgress);
+        
+        const interval = setInterval(() => {
+          setProgress(p => {
+            if (p >= 100) {
+              clearInterval(interval);
+              setIsGenerating(false);
+              setGenerationInterval(null);
+              
+              // Generate result based on workflow type
+              const isVideo = workflowType === 'T2V' || workflowType === 'I2V';
+              setResultType(isVideo ? 'video' : 'image');
+              
+              // Fake generation result
+              if (isVideo) {
+                setResult('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4');
+              } else {
+                setResult(`https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=800&q=80&seed=${Date.now()}`);
+              }
+
+              // Add to test history
+              if (currentUser) {
+                addTestHistory({
+                  userId: currentUser.id,
+                  workflowId: item.id,
+                  workflowTitle: item.title,
+                  testDate: new Date().toISOString(),
+                  result: `${isVideo ? 'Video' : 'Image'} generated successfully`,
+                  success: true
+                });
+              }
+              
+              return 100;
+            }
+            // Ensure progress doesn't exceed 100
+            const newProgress = Math.min(p + Math.floor(Math.random() * 15) + 5, 100);
+            return newProgress;
+          });
+        }, 500);
+        setGenerationInterval(interval);
+      } else {
+        // Pause generation
+        setIsPaused(true);
+        setPausedProgress(progress); // Store current progress
+        if (generationInterval) {
+          clearInterval(generationInterval);
+          setGenerationInterval(null);
+        }
+      }
+    }
   };
 
   const handleReset = () => {
+    // Clear any running interval
+    if (generationInterval) {
+      clearInterval(generationInterval);
+      setGenerationInterval(null);
+    }
+    
     setPrompt("");
     setUploadedImage(null);
     setResult(null);
     setProgress(0);
     setIsGenerating(false);
     setIsPaused(false);
+    setPausedProgress(0); // Reset paused progress
   };
 
   const handleDownload = () => {
