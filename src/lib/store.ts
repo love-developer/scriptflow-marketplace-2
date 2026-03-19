@@ -138,12 +138,27 @@ export interface TestHistory {
 
 // --- Mock Data ---
 const MOCK_USERS: User[] = [
-  { id: 'u1', email: 'admin@marketplace.com', username: 'AdminMaster', role: 'admin', level: 'Legendary Creator', joinDate: '2023-01-01', sales: 0, bio: 'Platform administrator.', subscriptionPlan: 'Premium+' },
-  { id: 'u2', email: 'seller@marketplace.com', username: 'PixelArchitect', role: 'seller', level: 'Pro Architect', joinDate: '2023-06-15', sales: 150, bio: 'ComfyUI specialist creating high-quality AI art workflows. 3 years in generative AI.', availableBalance: 1250.00, pendingBalance: 320.50, totalWithdrawn: 800.00 },
-  { id: 'u3', email: 'buyer@marketplace.com', username: 'CreativeMind', role: 'buyer', level: 'New Creator', joinDate: '2024-02-10', sales: 0, bio: 'Digital artist and AI enthusiast.', subscriptionPlan: 'Premium' },
-  { id: 'u4', email: 'studio@marketplace.com', username: 'StudioAI', role: 'seller', level: 'Elite Innovator', joinDate: '2023-03-20', sales: 320, bio: 'Professional studio producing top-tier AI workflows for e-commerce and photography.', availableBalance: 3400.00, pendingBalance: 890.00, totalWithdrawn: 2100.00 },
-  { id: 'u5', email: 'ninja@marketplace.com', username: 'ScriptNinja', role: 'seller', level: 'Rising Builder', joinDate: '2023-09-10', sales: 45, bio: 'Roblox scripter with expertise in automation and game hacks.', availableBalance: 450.00, pendingBalance: 120.00, totalWithdrawn: 200.00 },
-  { id: 'u6', email: 'gamer@marketplace.com', username: 'GamerXX', role: 'buyer', level: 'New Creator', joinDate: '2024-01-05', sales: 0, subscriptionPlan: 'Free' },
+  { id: 'u1', email: 'admin@marketplace.com', username: 'AdminMaster', role: 'admin', level: 'Legendary Creator', joinDate: '2023-01-01', sales: 0, bio: 'Platform administrator.', subscriptionPlan: 'Premium+', paymentMethods: [
+    { id: 'pm1', type: 'card', last4: '4242', brand: 'Visa', expiry: '12/25', isDefault: true },
+    { id: 'pm2', type: 'paypal', isDefault: false }
+  ]},
+  { id: 'u2', email: 'seller@marketplace.com', username: 'PixelArchitect', role: 'seller', level: 'Pro Architect', joinDate: '2023-06-15', sales: 150, bio: 'ComfyUI specialist creating high-quality AI art workflows. 3 years in generative AI.', availableBalance: 1250.00, pendingBalance: 320.50, totalWithdrawn: 800.00, paymentMethods: [
+    { id: 'pm3', type: 'card', last4: '1234', brand: 'Mastercard', expiry: '09/24', isDefault: true },
+    { id: 'pm4', type: 'bank', bankName: 'Bank of America', accountNumber: '****6789', isDefault: false }
+  ]},
+  { id: 'u3', email: 'buyer@marketplace.com', username: 'CreativeMind', role: 'buyer', level: 'New Creator', joinDate: '2024-02-10', sales: 0, bio: 'Digital artist and AI enthusiast.', subscriptionPlan: 'Premium', paymentMethods: [
+    { id: 'pm5', type: 'card', last4: '8888', brand: 'Visa', expiry: '03/26', isDefault: true }
+  ]},
+  { id: 'u4', email: 'studio@marketplace.com', username: 'StudioAI', role: 'seller', level: 'Elite Innovator', joinDate: '2023-03-20', sales: 320, bio: 'Professional studio producing top-tier AI workflows for e-commerce and photography.', availableBalance: 3400.00, pendingBalance: 890.00, totalWithdrawn: 2100.00, paymentMethods: [
+    { id: 'pm6', type: 'card', last4: '9999', brand: 'Amex', expiry: '11/25', isDefault: true },
+    { id: 'pm7', type: 'bank', bankName: 'Chase Bank', accountNumber: '****1234', isDefault: false }
+  ]},
+  { id: 'u5', email: 'ninja@marketplace.com', username: 'ScriptNinja', role: 'seller', level: 'Rising Builder', joinDate: '2023-09-10', sales: 45, bio: 'Roblox scripter with expertise in automation and game hacks.', availableBalance: 450.00, pendingBalance: 120.00, totalWithdrawn: 200.00, paymentMethods: [
+    { id: 'pm8', type: 'card', last4: '5555', brand: 'Discover', expiry: '07/24', isDefault: true }
+  ]},
+  { id: 'u6', email: 'gamer@marketplace.com', username: 'GamerXX', role: 'buyer', level: 'New Creator', joinDate: '2024-01-05', sales: 0, subscriptionPlan: 'Free', paymentMethods: [
+    { id: 'pm9', type: 'paypal', isDefault: true }
+  ]},
 ];
 
 const MOCK_ITEMS: Workflow[] = [
@@ -237,6 +252,12 @@ interface AppState {
   
   // Subscription Actions
   upgradeSubscription: (newPlan: SubscriptionPlan) => void;
+  
+  // Payment Method Actions
+  addPaymentMethod: (method: Omit<PaymentMethod, 'id'>) => void;
+  updatePaymentMethod: (id: string, updates: Partial<PaymentMethod>) => void;
+  removePaymentMethod: (id: string) => void;
+  setDefaultPaymentMethod: (id: string) => void;
 }
 
 export const useStore = create<AppState>()(
@@ -551,6 +572,94 @@ export const useStore = create<AppState>()(
           currentUser: state.currentUser ? { ...state.currentUser, subscriptionPlan: newPlan } : null,
           users: state.users.map(u => 
             u.id === user.id ? { ...u, subscriptionPlan: newPlan } : u
+          )
+        }));
+      },
+
+      addPaymentMethod: (method) => {
+        const user = get().currentUser;
+        if (!user) return;
+
+        const newPaymentMethod: PaymentMethod = {
+          ...method,
+          id: `pm${Date.now()}`,
+          isDefault: !user.paymentMethods || user.paymentMethods.length === 0
+        };
+
+        set(state => ({
+          currentUser: state.currentUser 
+            ? { ...state.currentUser, paymentMethods: [...(state.currentUser.paymentMethods || []), newPaymentMethod] }
+            : null,
+          users: state.users.map(u => 
+            u.id === user.id 
+              ? { ...u, paymentMethods: [...(u.paymentMethods || []), newPaymentMethod] }
+              : u
+          )
+        }));
+      },
+
+      updatePaymentMethod: (id, updates) => {
+        const user = get().currentUser;
+        if (!user) return;
+
+        set(state => ({
+          currentUser: state.currentUser 
+            ? { ...state.currentUser, paymentMethods: state.currentUser.paymentMethods?.map(m => 
+                m.id === id ? { ...m, ...updates } : m
+              ) || [] }
+            : null,
+          users: state.users.map(u => 
+            u.id === user.id 
+              ? { ...u, paymentMethods: u.paymentMethods?.map(m => 
+                  m.id === id ? { ...m, ...updates } : m
+                ) || [] }
+              : u
+          )
+        }));
+      },
+
+      removePaymentMethod: (id) => {
+        const user = get().currentUser;
+        if (!user) return;
+
+        const updatedMethods = user.paymentMethods?.filter(m => m.id !== id) || [];
+        
+        // If we removed the default method, set the first remaining method as default
+        const removedDefault = user.paymentMethods?.find(m => m.id === id)?.isDefault;
+        if (removedDefault && updatedMethods.length > 0) {
+          updatedMethods[0].isDefault = true;
+        }
+
+        set(state => ({
+          currentUser: state.currentUser 
+            ? { ...state.currentUser, paymentMethods: updatedMethods }
+            : null,
+          users: state.users.map(u => 
+            u.id === user.id 
+              ? { ...u, paymentMethods: updatedMethods }
+              : u
+          )
+        }));
+      },
+
+      setDefaultPaymentMethod: (id) => {
+        const user = get().currentUser;
+        if (!user) return;
+
+        set(state => ({
+          currentUser: state.currentUser 
+            ? { ...state.currentUser, paymentMethods: state.currentUser.paymentMethods?.map(m => ({
+                ...m,
+                isDefault: m.id === id
+              })) || [] }
+            : null,
+          users: state.users.map(u => 
+            u.id === user.id 
+              ? { ...u, paymentMethods: u.paymentMethods?.map(m => ({
+                  ...m,
+                  isDefault: m.id === id
+                })) || [] }
+              : u
           )
         }));
       },

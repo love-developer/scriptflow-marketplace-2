@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { CreditCard, Shield, Crown, ArrowLeft, Check, Lock, AlertCircle, Calendar } from "lucide-react";
-import { useStore } from "@/lib/store";
+import { useStore, PaymentMethod } from "@/lib/store";
 import { toast } from "sonner";
 
 const PLANS = [
@@ -45,45 +45,33 @@ const PLANS = [
 export default function SubscriptionPayment() {
   const [, params] = useRoute("/subscription-payment");
   const [, setLocation] = useLocation();
-  const { currentUser, upgradeSubscription } = useStore();
-  const [paymentMethods, setPaymentMethods] = useState<any[]>([]);
+  const { currentUser, upgradeSubscription, addPaymentMethod } = useStore();
   
   const [selectedMethod, setSelectedMethod] = useState<string>("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [yearly, setYearly] = useState(false);
+  const [showNewCardForm, setShowNewCardForm] = useState(false);
+  const [newCard, setNewCard] = useState({
+    cardNumber: '',
+    expiry: '',
+    cvv: '',
+    holderName: ''
+  });
   
   // Get plan from query parameters
   const urlParams = new URLSearchParams(window.location.search);
   const planName = urlParams.get('plan');
   const plan = PLANS.find(p => p.value === planName);
+  
+  const paymentMethods = currentUser?.paymentMethods || [];
 
   useEffect(() => {
-    // Load mock payment methods for now
-    const mockMethods = [
-      {
-        id: '1',
-        type: 'card',
-        last4: '4242',
-        brand: 'Visa',
-        expiry: '12/25',
-        isDefault: true
-      },
-      {
-        id: '2',
-        type: 'bank',
-        bankName: 'Chase Bank',
-        accountNumber: '6789',
-        isDefault: false
-      }
-    ];
-    setPaymentMethods(mockMethods);
-    
     // Set default payment method
-    const defaultMethod = mockMethods.find((method: any) => method.isDefault);
+    const defaultMethod = paymentMethods.find((method: any) => method.isDefault);
     if (defaultMethod) {
       setSelectedMethod(defaultMethod.id);
     }
-  }, []);
+  }, [paymentMethods]);
 
   if (!plan) {
     return (
@@ -103,12 +91,35 @@ export default function SubscriptionPayment() {
   const selectedPaymentMethod = paymentMethods.find((method: any) => method.id === selectedMethod);
   const finalPrice = yearly ? plan.yearlyPrice : plan.price;
 
-  const handlePayment = async () => {
-    if (!currentUser) {
-      toast.error("Please login to continue");
-      setLocation('/login');
+  const handleAddNewCard = () => {
+    if (!newCard.cardNumber || !newCard.expiry || !newCard.cvv || !newCard.holderName) {
+      toast.error("Please fill all card details");
       return;
     }
+
+    // Add the new card to payment methods
+    const cardMethod: Omit<PaymentMethod, 'id'> = {
+      type: 'card',
+      last4: newCard.cardNumber.slice(-4),
+      brand: newCard.cardNumber.startsWith('4') ? 'Visa' : newCard.cardNumber.startsWith('5') ? 'Mastercard' : 'Amex',
+      expiry: newCard.expiry,
+      isDefault: paymentMethods.length === 0
+    };
+
+    addPaymentMethod(cardMethod);
+    
+    // Reset form and select the newly added card
+    setNewCard({
+      cardNumber: '',
+      expiry: '',
+      cvv: '',
+      holderName: ''
+    });
+    setShowNewCardForm(false);
+    
+    toast.success("Card added successfully!");
+  };
+  const handlePayment = async () => {
 
     if (!selectedMethod) {
       toast.error("Please select a payment method");
@@ -145,7 +156,7 @@ export default function SubscriptionPayment() {
 
   return (
     <Layout>
-      <div className="max-w-4xl mx-auto px-4 py-12">
+      <div className="max-w-6xl mx-auto px-4 py-12">
         {/* Header */}
         <div className="mb-8">
           <Button 
@@ -264,9 +275,90 @@ export default function SubscriptionPayment() {
                     <p className="text-muted-foreground mb-4">
                       You need to add a payment method to complete this subscription
                     </p>
-                    <Button onClick={() => setLocation('/dashboard/payment-methods')}>
-                      Add Payment Method
+                    <Button onClick={() => setShowNewCardForm(true)}>
+                      <CreditCard className="w-4 h-4 mr-2" />
+                      Add New Card
                     </Button>
+                    
+                    {/* New Card Form */}
+                    {showNewCardForm && (
+                      <div className="mt-6 border border-border rounded-lg p-4 bg-muted/30">
+                        <h3 className="font-semibold mb-4">Add New Card</h3>
+                        <div className="space-y-4">
+                          <div>
+                            <label className="block text-sm font-medium mb-2">Card Number</label>
+                            <input
+                              type="text"
+                              placeholder="1234 5678 9012 3456"
+                              value={newCard.cardNumber}
+                              onChange={(e) => setNewCard({ ...newCard, cardNumber: e.target.value })}
+                              className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-transparent"
+                              maxLength={16}
+                            />
+                          </div>
+                          
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-sm font-medium mb-2">Expiry Date</label>
+                              <input
+                                type="text"
+                                placeholder="MM/YY"
+                                value={newCard.expiry}
+                                onChange={(e) => setNewCard({ ...newCard, expiry: e.target.value })}
+                                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-transparent"
+                                maxLength={5}
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium mb-2">CVV</label>
+                              <input
+                                type="text"
+                                placeholder="123"
+                                value={newCard.cvv}
+                                onChange={(e) => setNewCard({ ...newCard, cvv: e.target.value })}
+                                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-transparent"
+                                maxLength={4}
+                              />
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium mb-2">Cardholder Name</label>
+                            <input
+                              type="text"
+                              placeholder="John Doe"
+                              value={newCard.holderName}
+                              onChange={(e) => setNewCard({ ...newCard, holderName: e.target.value })}
+                              className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-transparent"
+                            />
+                          </div>
+
+                          <div className="flex gap-3">
+                            <Button
+                              variant="outline"
+                              onClick={() => {
+                                setShowNewCardForm(false);
+                                setNewCard({
+                                  cardNumber: '',
+                                  expiry: '',
+                                  cvv: '',
+                                  holderName: ''
+                                });
+                              }}
+                              className="flex-1"
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              onClick={handleAddNewCard}
+                              className="flex-1"
+                            >
+                              Add Card
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <>
@@ -316,12 +408,100 @@ export default function SubscriptionPayment() {
                     <div className="flex gap-3">
                       <Button 
                         variant="outline" 
+                        onClick={() => setShowNewCardForm(true)}
+                        className="flex-1"
+                      >
+                        <CreditCard className="w-4 h-4 mr-2" />
+                        Add New Card
+                      </Button>
+                      <Button 
+                        variant="outline" 
                         onClick={() => setLocation('/dashboard/payment-methods')}
                         className="flex-1"
                       >
-                        Add New Payment Method
+                        Manage Payment Methods
                       </Button>
                     </div>
+
+                    {/* New Card Form */}
+                    {showNewCardForm && (
+                      <div className="border border-border rounded-lg p-4 bg-muted/30">
+                        <h3 className="font-semibold mb-4">Add New Card</h3>
+                        <div className="space-y-4">
+                          <div>
+                            <label className="block text-sm font-medium mb-2">Card Number</label>
+                            <input
+                              type="text"
+                              placeholder="1234 5678 9012 3456"
+                              value={newCard.cardNumber}
+                              onChange={(e) => setNewCard({ ...newCard, cardNumber: e.target.value })}
+                              className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-transparent"
+                              maxLength={16}
+                            />
+                          </div>
+                          
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-sm font-medium mb-2">Expiry Date</label>
+                              <input
+                                type="text"
+                                placeholder="MM/YY"
+                                value={newCard.expiry}
+                                onChange={(e) => setNewCard({ ...newCard, expiry: e.target.value })}
+                                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-transparent"
+                                maxLength={5}
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium mb-2">CVV</label>
+                              <input
+                                type="text"
+                                placeholder="123"
+                                value={newCard.cvv}
+                                onChange={(e) => setNewCard({ ...newCard, cvv: e.target.value })}
+                                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-transparent"
+                                maxLength={4}
+                              />
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium mb-2">Cardholder Name</label>
+                            <input
+                              type="text"
+                              placeholder="John Doe"
+                              value={newCard.holderName}
+                              onChange={(e) => setNewCard({ ...newCard, holderName: e.target.value })}
+                              className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-transparent"
+                            />
+                          </div>
+
+                          <div className="flex gap-3">
+                            <Button
+                              variant="outline"
+                              onClick={() => {
+                                setShowNewCardForm(false);
+                                setNewCard({
+                                  cardNumber: '',
+                                  expiry: '',
+                                  cvv: '',
+                                  holderName: ''
+                                });
+                              }}
+                              className="flex-1"
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              onClick={handleAddNewCard}
+                              className="flex-1"
+                            >
+                              Add Card
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
 
                     {/* Payment Button */}
                     <div className="border-t border-border pt-6">

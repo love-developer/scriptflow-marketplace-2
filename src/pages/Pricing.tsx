@@ -65,7 +65,7 @@ const PLANS = [
 ];
 
 export default function Pricing() {
-  const { currentUser } = useStore();
+  const { currentUser, upgradeSubscription } = useStore();
   const [yearly, setYearly] = useState(false);
   const [, setLocation] = useLocation();
 
@@ -77,7 +77,21 @@ export default function Pricing() {
       return;
     }
     
-    // Redirect to subscription payment page with query parameter
+    // Handle Free plan directly - no payment needed
+    if (planName === 'Free') {
+      // Check if user already has Free plan
+      if (currentUser.subscriptionPlan === 'Free') {
+        toast.info("You're already on the Free plan.");
+        return;
+      }
+      
+      // Downgrade to Free plan
+      upgradeSubscription('Free');
+      toast.success("Successfully downgraded to Free plan!");
+      return;
+    }
+    
+    // Redirect to subscription payment page for paid plans
     setLocation(`/subscription-payment?plan=${planName}`);
   };
 

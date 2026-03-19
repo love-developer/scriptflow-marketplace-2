@@ -7,8 +7,7 @@ import { useStore, PaymentMethod } from "@/lib/store";
 import { toast } from "sonner";
 
 export default function PaymentMethods() {
-  const { currentUser } = useStore();
-  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
+  const { currentUser, addPaymentMethod, removePaymentMethod, setDefaultPaymentMethod } = useStore();
   const [showAddForm, setShowAddForm] = useState(false);
   const [newMethod, setNewMethod] = useState({
     type: 'card' as 'card' | 'bank' | 'paypal',
@@ -21,20 +20,8 @@ export default function PaymentMethods() {
     routingNumber: ''
   });
 
-  useEffect(() => {
-    // Load saved payment methods (mock data for now)
-    const mockMethods: PaymentMethod[] = [
-      {
-        id: '1',
-        type: 'card',
-        last4: '4242',
-        brand: 'Visa',
-        expiry: '12/25',
-        isDefault: true
-      }
-    ];
-    setPaymentMethods(mockMethods);
-  }, []);
+  const paymentMethods = currentUser?.paymentMethods || [];
+
 
   const handleAddPaymentMethod = () => {
     if (newMethod.type === 'card') {
@@ -43,8 +30,7 @@ export default function PaymentMethods() {
         return;
       }
       
-      const cardMethod: PaymentMethod = {
-        id: Date.now().toString(),
+      const cardMethod: Omit<PaymentMethod, 'id'> = {
         type: 'card',
         last4: newMethod.cardNumber.slice(-4),
         brand: newMethod.cardNumber.startsWith('4') ? 'Visa' : 'Mastercard',
@@ -52,7 +38,7 @@ export default function PaymentMethods() {
         isDefault: paymentMethods.length === 0
       };
       
-      setPaymentMethods([...paymentMethods, cardMethod]);
+      addPaymentMethod(cardMethod);
       toast.success("Card added successfully!");
     } else if (newMethod.type === 'bank') {
       if (!newMethod.bankName || !newMethod.accountNumber || !newMethod.routingNumber) {
@@ -60,15 +46,14 @@ export default function PaymentMethods() {
         return;
       }
       
-      const bankMethod: PaymentMethod = {
-        id: Date.now().toString(),
+      const bankMethod: Omit<PaymentMethod, 'id'> = {
         type: 'bank',
         bankName: newMethod.bankName,
         accountNumber: `****${newMethod.accountNumber.slice(-4)}`,
         isDefault: paymentMethods.length === 0
       };
       
-      setPaymentMethods([...paymentMethods, bankMethod]);
+      addPaymentMethod(bankMethod);
       toast.success("Bank account added successfully!");
     }
 
@@ -87,15 +72,12 @@ export default function PaymentMethods() {
   };
 
   const handleRemoveMethod = (id: string) => {
-    setPaymentMethods(paymentMethods.filter(method => method.id !== id));
+    removePaymentMethod(id);
     toast.success("Payment method removed");
   };
 
   const handleSetDefault = (id: string) => {
-    setPaymentMethods(paymentMethods.map(method => ({
-      ...method,
-      isDefault: method.id === id
-    })));
+    setDefaultPaymentMethod(id);
     toast.success("Default payment method updated");
   };
 
@@ -110,7 +92,7 @@ export default function PaymentMethods() {
 
   return (
     <DashboardLayout role={currentUser?.role || 'buyer'}>
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-full">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold">
