@@ -31,6 +31,14 @@ const AI_MODELS = [
   "Other / Multi-model",
 ];
 
+const FIVE_R_SELLER_TAGS = [
+  "Reliable", "Responsive", "Resourceful", "Respectful", "Resilient",
+  "Professional", "Quality", "Fast Delivery", "Expert", "Creative",
+  "Detailed", "Supportive", "Innovative", "Experienced", "Trusted",
+  "Premium", "Custom", "Optimized", "Advanced", "Beginner Friendly",
+  "Commercial Use", "Personal Use", "Educational", "Tutorial", "Template"
+];
+
 const STEPS = ["Choose Type", "Basic Info", "Files & Media", "Review & Submit"];
 
 interface WorkflowEntry {
@@ -302,13 +310,64 @@ export default function UploadWorkflow() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="wf-tags">Tags</Label>
-                  <Input
-                    id="wf-tags"
-                    placeholder="portrait, flux, comfyui"
-                    value={form.tags}
-                    onChange={e => handleChange("tags", e.target.value)}
-                  />
+                  <Label htmlFor="wf-tags">Five-R Seller Tags</Label>
+                  <div className="border border-border rounded-xl p-3">
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {form.tags.split(",").map(t => t.trim()).filter(Boolean).map((tag, idx) => (
+                        <span
+                          key={idx}
+                          className="inline-flex items-center gap-1 px-2 py-1 bg-primary/10 text-primary rounded-md text-sm"
+                        >
+                          {tag}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const currentTags = form.tags.split(",").map(t => t.trim()).filter(Boolean);
+                              const newTags = currentTags.filter((_, i) => i !== idx);
+                              handleChange("tags", newTags.join(", "));
+                            }}
+                            className="ml-1 text-primary/60 hover:text-primary"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                    <div className="max-h-32 overflow-y-auto">
+                      <p className="text-xs text-muted-foreground mb-2">Select from predefined tags:</p>
+                      <div className="grid grid-cols-2 gap-1">
+                        {FIVE_R_SELLER_TAGS.map(tag => {
+                          const isSelected = form.tags.split(",").map(t => t.trim()).filter(Boolean).includes(tag);
+                          return (
+                            <button
+                              key={tag}
+                              type="button"
+                              onClick={() => {
+                                const currentTags = form.tags.split(",").map(t => t.trim()).filter(Boolean);
+                                if (isSelected) {
+                                  const newTags = currentTags.filter(t => t !== tag);
+                                  handleChange("tags", newTags.join(", "));
+                                } else {
+                                  const newTags = [...currentTags, tag];
+                                  handleChange("tags", newTags.join(", "));
+                                }
+                              }}
+                              className={`text-left px-2 py-1 rounded text-xs transition-colors ${
+                                isSelected
+                                  ? "bg-primary text-primary-foreground"
+                                  : "hover:bg-secondary text-muted-foreground"
+                              }`}
+                            >
+                              {tag}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Select tags that describe your seller profile and workflow quality
+                  </p>
                 </div>
               </div>
             </div>

@@ -13,6 +13,7 @@ import Pricing from "@/pages/Pricing";
 import { Login, Register } from "@/pages/Auth";
 import ItemDetail from "@/pages/ItemDetail";
 import TestInterface from "@/pages/TestInterface";
+import SearchPage from "@/pages/SearchPage";
 import SellerProfile from "@/pages/SellerProfile";
 import SellerApplication from "@/pages/SellerApplication";
 import BuyerDashboard from "@/pages/dashboard/BuyerDashboard";
@@ -81,6 +82,7 @@ function Router() {
     <Switch>
       {/* Public Routes */}
       <Route path="/" component={(props) => <RouteWithTransition component={Home} {...props} />} />
+      <Route path="/search" component={(props) => <RouteWithTransition component={SearchPage} {...props} />} />
       <Route path="/pricing" component={(props) => <RouteWithTransition component={Pricing} {...props} />} />
       <Route path="/login" component={(props) => <RouteWithTransition component={Login} {...props} />} />
       <Route path="/register" component={(props) => <RouteWithTransition component={Register} {...props} />} />

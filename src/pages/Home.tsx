@@ -4,7 +4,7 @@ import { useStore } from "@/lib/store";
 import ItemCard from "@/components/ItemCard";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import {
   Search, Sparkles, Gamepad2, ArrowRight, Zap, ShieldCheck, Users, Star
 } from "lucide-react";
@@ -13,6 +13,7 @@ export default function Home() {
   const { items } = useStore();
   const [filter, setFilter] = useState<"all" | "ai_workflow">("all");
   const [search, setSearch] = useState("");
+  const [, setLocation] = useLocation();
 
   const approvedItems = items.filter(i => i.status === "Approved" && i.type === "ai_workflow");
 
@@ -20,6 +21,12 @@ export default function Home() {
     if (search && !item.title.toLowerCase().includes(search.toLowerCase()) && !item.category.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
   });
+
+  const handleSearch = () => {
+    if (search.trim()) {
+      setLocation(`/search?q=${encodeURIComponent(search.trim())}`);
+    }
+  };
 
   const features = [
     { icon: Zap, label: "Instant Download", desc: "Get your workflow immediately after purchase" },
@@ -60,8 +67,9 @@ export default function Home() {
                   placeholder="Search workflows by name or model..."
                   value={search}
                   onChange={e => setSearch(e.target.value)}
+                  onKeyPress={e => e.key === 'Enter' && handleSearch()}
                 />
-                <Button size="sm" className="gradient-bg text-white border-0 hover:opacity-90 rounded-xl h-9 px-4 flex-shrink-0">
+                <Button size="sm" className="gradient-bg text-white border-0 hover:opacity-90 rounded-xl h-9 px-4 flex-shrink-0" onClick={handleSearch}>
                   Search
                 </Button>
               </div>

@@ -132,6 +132,77 @@ export default function BuyerDashboard() {
         </Button>
       </div>
 
+      {/* Your Active Scripts Section */}
+      <div className="bg-card border border-border rounded-2xl p-6 mb-8">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-xl font-bold flex items-center gap-2">
+              <Gamepad2 className="w-5 h-5 text-emerald-500" />
+              👉 Your Active Scripts
+            </h2>
+            <p className="text-sm text-muted-foreground mt-1">Scripts available based on your subscription plan</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {robloxScripts.slice(0, 9).map((script, index) => {
+            const isAccessible = index < accessibleScripts;
+            return (
+              <div key={script.id} className={`group bg-card border rounded-2xl p-4 transition-all card-hover ${
+                isAccessible 
+                  ? 'border-primary/30 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5' 
+                  : 'border-border opacity-75'
+              }`}>
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex-1">
+                    <h4 className="font-display font-bold text-sm mb-1 line-clamp-2 group-hover:text-primary transition-colors">{script.title}</h4>
+                    <p className="text-xs text-primary/70 font-semibold uppercase tracking-wider">{script.category}</p>
+                  </div>
+                  <div className={`px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${
+                    isAccessible 
+                      ? 'bg-yellow-100 text-yellow-700 border border-yellow-200' 
+                      : 'bg-secondary text-muted-foreground border border-border'
+                  }`}>
+                    {isAccessible ? '✅' : '🔒'} {isAccessible ? 'Active' : 'Locked'}
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <span className={`text-xs font-medium ${
+                    isAccessible ? 'text-primary' : 'text-muted-foreground'
+                  }`}>
+                    {isAccessible ? 'Available' : subscriptionPlan === 'Free' ? 'Premium+' : 'Premium'}
+                  </span>
+                  <Button size="sm" variant="outline" className="text-xs h-7 px-2 hover:bg-primary/10 hover:border-primary/30 hover:text-primary">
+                    View Details
+                  </Button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {subscriptionPlan !== 'Premium+' && (
+          <div className="mt-6 p-4 bg-primary/5 border border-primary/20 rounded-2xl">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-semibold text-primary">
+                  🔒 {robloxScripts.length - accessibleScripts} more scripts available
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Upgrade to {subscriptionPlan === 'Free' ? 'Premium' : 'Premium+'} to unlock all scripts
+                </p>
+              </div>
+              <Link href="/pricing">
+                <Button size="sm" className="gradient-bg text-white border-0 hover:opacity-90">
+                  Upgrade Plan
+                </Button>
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* Purchased Workflows */}
       <div className="bg-card border border-border rounded-2xl overflow-hidden mb-8">
         <div className="px-6 py-4 border-b border-border flex items-center justify-between">
