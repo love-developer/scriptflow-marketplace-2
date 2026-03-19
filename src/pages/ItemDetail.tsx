@@ -24,8 +24,8 @@ export default function ItemDetail() {
       setLocation('/login');
       return;
     }
-    buyItem(item.id);
-    toast.success("Purchase successful! Available in your dashboard.");
+    // Redirect to payment page for workflow purchase
+    window.location.href = `/payment?item=${item.id}`;
   };
 
   const handleTest = () => {

@@ -7,7 +7,7 @@ export type Level = 'New Creator' | 'Rising Builder' | 'Pro Architect' | 'Elite 
 export type SubscriptionPlan = 'Free' | 'Premium' | 'Premium+';
 export type WorkflowType = 'T2I' | 'I2I' | 'T2V' | 'I2V';
 export type WithdrawalStatus = 'Pending' | 'Approved' | 'Rejected' | 'Paid';
-export type PaymentMethod = 'PayPal' | 'Crypto' | 'Bank Transfer';
+export type PaymentMethodType = 'PayPal' | 'Crypto' | 'Bank Transfer';
 
 export interface User {
   id: string;
@@ -24,6 +24,18 @@ export interface User {
   availableBalance?: number;
   pendingBalance?: number;
   totalWithdrawn?: number;
+  paymentMethods?: PaymentMethod[];
+}
+
+export interface PaymentMethod {
+  id: string;
+  type: 'card' | 'bank' | 'paypal';
+  last4?: string;
+  brand?: string;
+  expiry?: string;
+  bankName?: string;
+  accountNumber?: string;
+  isDefault: boolean;
 }
 
 export interface Workflow {
@@ -97,7 +109,7 @@ export interface WithdrawalRequest {
   sellerName: string;
   sellerEmail: string;
   amount: number;
-  paymentMethod: PaymentMethod;
+  paymentMethod: PaymentMethodType;
   paymentDetails: {
     paypalEmail?: string;
     walletAddress?: string;
@@ -222,6 +234,9 @@ interface AppState {
   // Support Actions
   addTicketReply: (ticketId: string, message: string, from: 'user' | 'admin') => void;
   updateTicketStatus: (ticketId: string, status: Ticket['status']) => void;
+  
+  // Subscription Actions
+  upgradeSubscription: (newPlan: SubscriptionPlan) => void;
 }
 
 export const useStore = create<AppState>()(
@@ -525,6 +540,40 @@ export const useStore = create<AppState>()(
             )
           }));
         }
+      },
+
+      upgradeSubscription: (newPlan: SubscriptionPlan) => {
+        const user = get().currentUser;
+        if (!user) return;
+
+        // Update current user's subscription plan
+        set(state => ({
+          currentUser: state.currentUser ? { ...state.currentUser, subscriptionPlan: newPlan } : null,
+          users: state.users.map(u => 
+            u.id === user.id ? { ...u, subscriptionPlan: newPlan } : u
+          )
+        }));
+      },
+
+      rejectSellerRequest: (requestId, reviewMessage) => {
+        const state = get();
+        const request = state.sellerRequests.find(r => r.id === requestId);
+        if (!request) return;
+
+        // Update the request status to Rejected
+        set(state => ({
+          sellerRequests: state.sellerRequests.map(r => 
+            r.id === requestId 
+              ? { 
+                  ...r, 
+                  status: 'Rejected',
+                  reviewedBy: state.currentUser?.username,
+                  reviewedAt: new Date().toISOString(),
+                  reviewMessage
+                }
+              : r
+          )
+        }));
       }
     }),
     {

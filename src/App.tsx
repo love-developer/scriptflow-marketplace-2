@@ -19,6 +19,7 @@ import SellerApplication from "@/pages/SellerApplication";
 import BuyerDashboard from "@/pages/dashboard/BuyerDashboard";
 import BuyerSupport from "@/pages/dashboard/BuyerSupport";
 import BuyerSubscriptions from "@/pages/dashboard/BuyerSubscriptions";
+import PaymentMethods from "@/pages/PaymentMethods";
 import { SellerDashboard } from "@/pages/dashboard/SellerDashboard";
 import SellerItems from "@/pages/dashboard/SellerItems";
 import SellerAnalytics from "@/pages/dashboard/SellerAnalytics";
@@ -105,6 +106,11 @@ function Router() {
       <Route path="/dashboard/subscriptions">
         <ProtectedRoute allowedRoles={["buyer", "seller", "admin"]}>
           <BuyerSubscriptions />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/dashboard/payment-methods">
+        <ProtectedRoute allowedRoles={["buyer", "seller", "admin"]}>
+          <PaymentMethods />
         </ProtectedRoute>
       </Route>
       

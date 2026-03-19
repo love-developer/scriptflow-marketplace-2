@@ -3,7 +3,7 @@ import { Link, useLocation } from "wouter";
 import { useStore } from "@/lib/store";
 import { useDarkMode } from "@/lib/darkMode";
 import {
-  LayoutDashboard, Package, ShoppingBag, Users, CreditCard, LifeBuoy, ShieldAlert, FileCode2,
+  LayoutDashboard, Package, ShoppingBag, Users, CreditCard, LifeBuoy, ShieldAlert, Shield, FileCode2,
   LogOut, Menu, Upload, Award, FileText, BarChart2, DollarSign,
   Sun, Moon, ChevronRight, Sparkles
 } from "lucide-react";
@@ -28,6 +28,7 @@ export function DashboardLayout({ children, role }: { children: ReactNode; role:
     navItems = [
       { name: "My Library", href: "/dashboard", icon: ShoppingBag },
       { name: "Subscriptions", href: "/dashboard/subscriptions", icon: CreditCard },
+      { name: "Payment Methods", href: "/dashboard/payment-methods", icon: Shield },
       { name: "Support", href: "/dashboard/support", icon: LifeBuoy },
     ];
   } else if (role === "seller") {
@@ -36,6 +37,7 @@ export function DashboardLayout({ children, role }: { children: ReactNode; role:
       { name: "My Workflows", href: "/seller-dashboard/items", icon: Package },
       { name: "Analytics", href: "/seller-dashboard/analytics", icon: BarChart2 },
       { name: "Withdrawals", href: "/seller-dashboard/withdrawals", icon: DollarSign },
+      { name: "Payment Methods", href: "/dashboard/payment-methods", icon: Shield },
       { name: "Upload Workflow", href: "/seller-dashboard/upload", icon: Upload },
     ];
   } else if (role === "admin") {

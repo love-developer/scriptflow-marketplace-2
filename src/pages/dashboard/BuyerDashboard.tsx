@@ -3,7 +3,7 @@ import { useStore } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import {
-  Download, ShoppingBag, Gamepad2, Sparkles, ArrowUpRight, Clock, Star, Copy, History, Crown, Shield, Zap
+  ShoppingBag, Gamepad2, Sparkles, ArrowUpRight, Clock, Copy, History, Crown, Shield, Zap
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -31,7 +31,7 @@ export default function BuyerDashboard() {
     switch(plan) {
       case 'Premium+': return 'text-purple-600 bg-purple-50 border-purple-200';
       case 'Premium': return 'text-blue-600 bg-blue-50 border-blue-200';
-      default: return 'text-gray-600 bg-gray-50 border-gray-200';
+      default: return 'text-gray-300 bg-slate-800 border-slate-600';
     }
   };
 
@@ -70,7 +70,7 @@ export default function BuyerDashboard() {
           <Link href="/pricing">
             <Button variant="outline" className="gap-2">
               <ArrowUpRight className="w-4 h-4" />
-              Upgrade
+              Change Plan
             </Button>
           </Link>
         </div>
@@ -194,7 +194,10 @@ export default function BuyerDashboard() {
                 </p>
               </div>
               <Link href="/pricing">
-                <Button size="sm" className="gradient-bg text-white border-0 hover:opacity-90">
+                <Button 
+                  size="sm" 
+                  className="gradient-bg text-white border-0 hover:opacity-90"
+                >
                   Upgrade Plan
                 </Button>
               </Link>

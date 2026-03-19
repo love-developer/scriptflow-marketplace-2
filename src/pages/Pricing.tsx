@@ -3,79 +3,88 @@ import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
-import { CheckCircle2, Zap, Crown, Gamepad2 } from "lucide-react";
+import { CheckCircle2, Crown, Shield } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { toast } from "sonner";
 
 const PLANS = [
   {
-    name: "Starter",
-    price: 4.99,
-    yearlyPrice: 3.99,
-    icon: Gamepad2,
-    description: "Perfect for casual Roblox players",
+    name: "Free",
+    price: 0,
+    yearlyPrice: 0,
+    icon: Shield,
+    description: "Perfect for getting started",
     features: [
-      "Access to 5 Roblox scripts",
-      "Basic auto-farm scripts",
-      "Community support",
-      "Monthly script updates",
+      "Access to 3 scripts",
+      "Basic support",
     ],
     highlight: false,
     badge: null,
-    iconBg: "bg-secondary",
-    iconColor: "text-muted-foreground",
+    iconBg: "bg-gray-100",
+    iconColor: "text-gray-600",
+    value: 'Free'
   },
   {
-    name: "Pro",
-    price: 12.99,
-    yearlyPrice: 9.99,
-    icon: Zap,
-    description: "For serious Roblox players",
+    name: "Premium",
+    price: 9.99,
+    yearlyPrice: 7.99,
+    icon: Shield,
+    description: "For regular users",
     features: [
-      "Access to 20+ Roblox scripts",
-      "ESP, speed & farm scripts",
-      "Priority Discord support",
-      "Weekly script updates",
-      "Anti-ban protection updates",
-      "Script request (1/month)",
+      "Access to 10 scripts",
+      "Basic AI workflows",
+      "Priority support",
+      "Ad-free experience",
     ],
     highlight: true,
     badge: "Most Popular",
     iconBg: "gradient-bg",
     iconColor: "text-white",
+    value: 'Premium'
   },
   {
-    name: "Elite",
-    price: 24.99,
-    yearlyPrice: 19.99,
+    name: "Premium+",
+    price: 19.99,
+    yearlyPrice: 15.99,
     icon: Crown,
     description: "Everything, unlimited",
     features: [
-      "Access to ALL scripts (50+)",
-      "Premium exclusive scripts",
-      "24/7 VIP Discord support",
-      "Daily script updates",
-      "Early access to new scripts",
-      "Unlimited script requests",
-      "Custom script modifications",
+      "Unlimited scripts",
+      "All AI workflows",
+      "24/7 support",
+      "Early access to new features",
+      "Exclusive content",
     ],
     highlight: false,
     badge: "Best Value",
-    iconBg: "bg-secondary",
-    iconColor: "text-muted-foreground",
+    iconBg: "bg-purple-100",
+    iconColor: "text-purple-600",
+    value: 'Premium+'
   },
 ];
 
 export default function Pricing() {
-  const { currentUser } = useStore();
+  const { currentUser, upgradeSubscription } = useStore();
   const [yearly, setYearly] = useState(false);
 
   const handleSubscribe = (planName: string) => {
+    console.log('Pricing page - handleSubscribe called with:', planName);
+    
     if (!currentUser) {
       toast.error("Please log in to subscribe.");
       return;
     }
-    toast.success(`Subscribed to ${planName}! (Payment simulation)`);
+    
+    // Handle subscription change directly without payment page
+    upgradeSubscription(planName as any);
+    
+    if (planName === 'Free') {
+      toast.success("Successfully downgraded to Free plan!");
+    } else if (planName === 'Premium') {
+      toast.success("Successfully upgraded to Premium plan!");
+    } else if (planName === 'Premium+') {
+      toast.success("Successfully upgraded to Premium+ plan!");
+    }
   };
 
   return (
@@ -84,8 +93,8 @@ export default function Pricing() {
         {/* Header */}
         <div className="text-center mb-16">
           <Badge className="mb-4 bg-primary/10 text-primary border-primary/20 px-4 py-1.5 inline-flex items-center gap-1.5">
-            <Gamepad2 className="w-3.5 h-3.5" />
-            Roblox Script Subscriptions
+            <Shield className="w-3.5 h-3.5" />
+            ScriptFlow Subscriptions
           </Badge>
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             Level up your{" "}
@@ -141,10 +150,12 @@ export default function Pricing() {
 
               <div className="mb-6">
                 <div className="flex items-end gap-1">
-                  <span className="text-4xl font-bold">${yearly ? plan.yearlyPrice : plan.price}</span>
-                  <span className="text-muted-foreground text-sm mb-1">/mo</span>
+                  <span className="text-4xl font-bold">
+                    {plan.price === 0 ? 'Free' : `$${yearly ? plan.yearlyPrice : plan.price}`}
+                  </span>
+                  {plan.price > 0 && <span className="text-muted-foreground text-sm mb-1">/mo</span>}
                 </div>
-                {yearly && (
+                {yearly && plan.price > 0 && (
                   <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1 font-medium">
                     Billed ${(plan.yearlyPrice * 12).toFixed(0)}/year — save ${((plan.price - plan.yearlyPrice) * 12).toFixed(0)}
                   </p>
@@ -161,12 +172,12 @@ export default function Pricing() {
               </ul>
 
               <Button
-                onClick={() => handleSubscribe(plan.name)}
+                onClick={() => handleSubscribe(plan.value)}
                 className={`w-full font-semibold ${plan.highlight ? "gradient-bg text-white border-0 hover:opacity-90" : ""}`}
                 variant={plan.highlight ? "default" : "outline"}
                 size="lg"
               >
-                Get {plan.name}
+                {currentUser?.subscriptionPlan === plan.value ? 'Current Plan' : `Get ${plan.name}`}
               </Button>
             </div>
           ))}
