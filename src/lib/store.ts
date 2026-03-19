@@ -149,6 +149,21 @@ const MOCK_ITEMS: Workflow[] = [
   { id: 's4', title: 'Auto Collect & Coin Farmer', description: 'Automatically collect coins, gems and rewards in any Roblox idle/farming game. Configurable radius.', price: 5.99, category: 'Farming', sellerId: 'u5', sellerName: 'ScriptNinja', sellerLevel: 'Rising Builder', rating: 4.0, testCount: 1200, status: 'Approved', image: 'https://images.unsplash.com/photo-1563089145-599997674d42?w=800&q=80', tags: ['collect', 'coins', 'idle'], type: 'roblox_script', fileUrl: '/scripts/auto-collect.lua', createdAt: '2024-03-20' },
 ];
 
+const MOCK_PURCHASES: Purchase[] = [
+  { id: 'p1', userId: 'u3', itemId: 'w1', itemTitle: 'Portrait Enhancer Pro v2.0', price: 29.99, date: '2024-03-01', type: 'ai_workflow' },
+  { id: 'p2', userId: 'u6', itemId: 'w2', itemTitle: 'Anime Style Transfer', price: 15.00, date: '2024-03-02', type: 'ai_workflow' },
+  { id: 'p3', userId: 'u3', itemId: 'w3', itemTitle: 'Product Photography Studio', price: 49.00, date: '2024-03-03', type: 'ai_workflow' },
+  { id: 'p4', userId: 'u6', itemId: 'w4', itemTitle: 'Fantasy Landscape Generator', price: 24.99, date: '2024-03-04', type: 'ai_workflow' },
+  { id: 'p5', userId: 'u3', itemId: 'w5', itemTitle: 'Realistic Upscaler 4x', price: 19.99, date: '2024-03-05', type: 'ai_workflow' },
+  { id: 'p6', userId: 'u6', itemId: 'w6', itemTitle: 'Logo & Brand Design AI', price: 39.99, date: '2024-03-06', type: 'ai_workflow' },
+  { id: 'p7', userId: 'u3', itemId: 'w8', itemTitle: '3D Object Concept Renderer', price: 44.99, date: '2024-03-07', type: 'ai_workflow' },
+  { id: 'p8', userId: 'u6', itemId: 's1', itemTitle: 'Auto Farm Pro Simulator', price: 9.99, date: '2024-03-08', type: 'roblox_script' },
+  { id: 'p9', userId: 'u3', itemId: 's2', itemTitle: 'ESP & Wallhack Toolkit', price: 14.99, date: '2024-03-09', type: 'roblox_script' },
+  { id: 'p10', userId: 'u6', itemId: 'w1', itemTitle: 'Portrait Enhancer Pro v2.0', price: 29.99, date: '2024-03-10', type: 'ai_workflow' },
+  { id: 'p11', userId: 'u3', itemId: 'w2', itemTitle: 'Anime Style Transfer', price: 15.00, date: '2024-03-11', type: 'ai_workflow' },
+  { id: 'p12', userId: 'u6', itemId: 'w4', itemTitle: 'Fantasy Landscape Generator', price: 24.99, date: '2024-03-12', type: 'ai_workflow' },
+];
+
 // --- Store Definition ---
 interface AppState {
   currentUser: User | null;
@@ -177,6 +192,14 @@ interface AppState {
   // Test History Actions
   addTestHistory: (test: Omit<TestHistory, 'id'>) => void;
   
+  // Balance Calculation Actions
+  calculateSellerBalance: (sellerId: string) => {
+    totalRevenue: number;
+    totalWithdrawn: number;
+    availableBalance: number;
+    pendingBalance: number;
+  };
+  
   // Support Actions
   addTicketReply: (ticketId: string, message: string, from: 'user' | 'admin') => void;
   updateTicketStatus: (ticketId: string, status: Ticket['status']) => void;
@@ -186,6 +209,19 @@ interface AppState {
   updateUserRole: (id: string, role: Role) => void;
   deleteItem: (id: string) => void;
   approveSellerRequest: (requestId: string, approved: boolean, reviewMessage?: string) => void;
+  rejectSellerRequest: (requestId: string, reviewMessage?: string) => void;
+  
+  // Balance Calculation Actions
+  calculateSellerBalance: (sellerId: string) => {
+    totalRevenue: number;
+    totalWithdrawn: number;
+    availableBalance: number;
+    pendingBalance: number;
+  };
+  
+  // Support Actions
+  addTicketReply: (ticketId: string, message: string, from: 'user' | 'admin') => void;
+  updateTicketStatus: (ticketId: string, status: Ticket['status']) => void;
 }
 
 export const useStore = create<AppState>()(
@@ -194,7 +230,7 @@ export const useStore = create<AppState>()(
       currentUser: null,
       users: MOCK_USERS,
       items: MOCK_ITEMS,
-      purchases: [],
+      purchases: MOCK_PURCHASES,
       tickets: [],
       sellerRequests: [],
       withdrawalRequests: [],
@@ -348,12 +384,36 @@ export const useStore = create<AppState>()(
         set(state => ({ sellerRequests: [request, ...state.sellerRequests] }));
       },
 
+      calculateSellerBalance: (sellerId: string) => {
+        const state = get();
+        const sellerItems = state.items.filter(item => item.sellerId === sellerId && item.status === 'Approved');
+        const sellerSales = state.purchases.filter(purchase => 
+          sellerItems.some(item => item.id === purchase.itemId)
+        );
+        const totalRevenue = sellerSales.reduce((sum, sale) => sum + sale.price, 0);
+        const totalWithdrawn = state.withdrawalRequests
+          .filter(w => w.sellerId === sellerId && w.status === 'Paid')
+          .reduce((sum, w) => sum + w.amount, 0);
+        
+        return {
+          totalRevenue,
+          totalWithdrawn,
+          availableBalance: totalRevenue - totalWithdrawn,
+          pendingBalance: state.withdrawalRequests
+            .filter(w => w.sellerId === sellerId && w.status === 'Pending')
+            .reduce((sum, w) => sum + w.amount, 0)
+        };
+      },
+
       requestWithdrawal: (withdrawal) => {
         const user = get().currentUser;
         if (!user) return;
 
+        // Calculate current balance dynamically
+        const balanceData = get().calculateSellerBalance(user.id);
+        
         // Check if user has sufficient balance
-        if (user.availableBalance! < withdrawal.amount) {
+        if (balanceData.availableBalance < withdrawal.amount) {
           throw new Error("Insufficient balance");
         }
 
@@ -369,9 +429,10 @@ export const useStore = create<AppState>()(
 
         // Deduct from available balance immediately
         set(state => ({
+          ...state,
           users: state.users.map(u => 
             u.id === user.id 
-              ? { ...u, availableBalance: u.availableBalance! - withdrawal.amount }
+              ? { ...u, availableBalance: balanceData.availableBalance - withdrawal.amount }
               : u
           ),
           withdrawalRequests: [withdrawalRequest, ...state.withdrawalRequests]

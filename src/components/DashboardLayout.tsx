@@ -41,10 +41,12 @@ export function DashboardLayout({ children, role }: { children: ReactNode; role:
   } else if (role === "admin") {
     navItems = [
       { name: "Dashboard", href: "/admin", icon: LayoutDashboard, section: "Overview" },
-      { name: "Users", href: "/admin/users", icon: Users, section: "Management" },
-      { name: "Sellers", href: "/admin/sellers", icon: Award, section: "Management" },
+      { name: "Upload Content", href: "/admin/upload", icon: Upload, section: "Content" },
       { name: "Workflows", href: "/admin/workflows", icon: FileText, section: "Content" },
       { name: "Roblox Scripts", href: "/admin/roblox-scripts", icon: FileCode2, section: "Content" },
+      { name: "Users", href: "/admin/users", icon: Users, section: "Management" },
+      { name: "Sellers", href: "/admin/sellers", icon: Award, section: "Management" },
+      { name: "Seller Applications", href: "/admin/seller-applications", icon: Users, section: "Management" },
       { name: "Payments", href: "/admin/payments", icon: CreditCard, section: "Finance" },
       { name: "Withdrawals", href: "/admin/withdrawals", icon: DollarSign, section: "Finance" },
       { name: "Support", href: "/admin/support", icon: LifeBuoy, section: "Operations" },

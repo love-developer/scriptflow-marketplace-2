@@ -123,22 +123,21 @@ export function Register() {
   const [password, setPassword] = useState("");
   const [wantsToSell, setWantsToSell] = useState(false);
   const [, setLocation] = useLocation();
-  const { register, requestSellerStatus } = useStore();
+  const { register } = useStore();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Always register as buyer first, seller status will be requested separately
-    register(email, password, username, 'buyer');
+    register(email, password, username);
     
     if (wantsToSell) {
-      // Submit seller request
-      requestSellerStatus("I would like to become a seller to share my assets with the community.");
-      toast.success("Account created! Your seller request has been submitted for admin approval.");
+      // Redirect to seller application page
+      setLocation('/become-seller');
+      toast.success("Account created! Please complete your seller application.");
     } else {
       toast.success("Account created successfully");
+      setLocation('/dashboard');
     }
-    
-    setLocation('/dashboard');
   };
 
   const handleSocialLogin = (provider: string) => {

@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { ArrowLeft, User, Globe, Link2, MessageSquare, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 
@@ -16,6 +16,7 @@ export default function SellerApplication() {
   const [agreed, setAgreed] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [, setLocation] = useLocation();
   
   const [formData, setFormData] = useState({
     name: '',
@@ -46,10 +47,8 @@ export default function SellerApplication() {
     try {
       await requestSellerStatus(formData);
       toast.success("Application submitted successfully! We'll review it within 24-48 hours.");
-      // Reset form
-      setFormData({ name: '', platform: '', profileLink: '', message: '' });
-      setAgreed(false);
-      setShowForm(false);
+      // Redirect to dashboard after successful submission
+      setLocation('/dashboard');
     } catch (error) {
       toast.error("Failed to submit application. Please try again.");
     } finally {

@@ -8,17 +8,26 @@ import {
 } from "lucide-react";
 
 export function SellerDashboard() {
-  const { items, currentUser } = useStore();
+  const { items, currentUser, purchases } = useStore();
   const myItems = items.filter(i => i.sellerId === currentUser?.id);
 
   const approved = myItems.filter(i => i.status === "Approved");
   const pending = myItems.filter(i => i.status === "Pending");
 
+  // Calculate actual sales and revenue from purchases
+  const mySales = purchases.filter(p => {
+    const item = myItems.find(i => i.id === p.itemId && i.type === 'ai_workflow');
+    return item && item.sellerId === currentUser?.id;
+  });
+  const totalRevenue = mySales.reduce((sum, sale) => sum + sale.price, 0);
+  const totalSales = mySales.length;
+  const uniqueCustomers = new Set(mySales.map(s => s.userId)).size;
+
   const stats = [
-    { label: "Total Revenue", value: "$12,450", sub: "+18% this month", icon: DollarSign, color: "text-emerald-500", bg: "bg-emerald-500/10" },
+    { label: "Total Revenue", value: `$${totalRevenue.toFixed(2)}`, sub: `From ${totalSales} sales`, icon: DollarSign, color: "text-emerald-500", bg: "bg-emerald-500/10" },
     { label: "Active Workflows", value: approved.length.toString(), sub: `${pending.length} pending review`, icon: Package, color: "text-blue-500", bg: "bg-blue-500/10" },
-    { label: "Total Downloads", value: "1,842", sub: "+241 this week", icon: TrendingUp, color: "text-violet-500", bg: "bg-violet-500/10" },
-    { label: "Customers", value: "892", sub: "Lifetime unique buyers", icon: Users, color: "text-pink-500", bg: "bg-pink-500/10" },
+    { label: "Total Downloads", value: myItems.reduce((sum, item) => sum + item.testCount, 0).toString(), sub: "All-time tests", icon: TrendingUp, color: "text-violet-500", bg: "bg-violet-500/10" },
+    { label: "Customers", value: uniqueCustomers.toString(), sub: "Unique buyers", icon: Users, color: "text-pink-500", bg: "bg-pink-500/10" },
   ];
 
   const statusBadge = (status: string) => {
@@ -147,7 +156,9 @@ export function SellerDashboard() {
                     <td className="px-6 py-4 text-muted-foreground hidden sm:table-cell">
                       <span className="flex items-center gap-1"><Eye className="w-3.5 h-3.5" />{item.testCount}</span>
                     </td>
-                    <td className="px-6 py-4 text-right font-semibold text-emerald-600 dark:text-emerald-400">124</td>
+                    <td className="px-6 py-4 text-right font-semibold text-emerald-600 dark:text-emerald-400">
+                      {mySales.filter(sale => sale.itemId === item.id).length}
+                    </td>
                   </tr>
                 ))}
               </tbody>

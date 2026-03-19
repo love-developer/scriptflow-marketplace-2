@@ -15,7 +15,7 @@ import {
 import { toast } from "sonner";
 
 export default function SellerWithdrawals() {
-  const { currentUser, withdrawalRequests, requestWithdrawal } = useStore();
+  const { currentUser, withdrawalRequests, requestWithdrawal, calculateSellerBalance } = useStore();
   const [showRequestDialog, setShowRequestDialog] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
@@ -33,10 +33,14 @@ export default function SellerWithdrawals() {
 
   const myWithdrawalRequests = withdrawalRequests.filter(w => w.sellerId === currentUser?.id);
   
-  // Calculate balances
-  const availableBalance = currentUser?.availableBalance || 0;
-  const pendingBalance = currentUser?.pendingBalance || 0;
-  const totalWithdrawn = currentUser?.totalWithdrawn || 0;
+  // Calculate balances using new function
+  const balanceData = calculateSellerBalance(currentUser?.id || '');
+  const availableBalance = balanceData.availableBalance;
+  const pendingBalance = balanceData.pendingBalance;
+  const totalWithdrawn = balanceData.totalWithdrawn;
+  
+  // Debug logging
+  console.log('Balance calculation:', balanceData);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -47,13 +51,16 @@ export default function SellerWithdrawals() {
     
     const amount = parseFloat(formData.amount);
     
+    // Debug logging
+    console.log('Withdrawal attempt:', { amount, availableBalance, paymentMethod: formData.paymentMethod });
+    
     if (!amount || amount <= 0) {
       toast.error("Please enter a valid amount");
       return;
     }
     
     if (amount > availableBalance) {
-      toast.error("Amount exceeds available balance");
+      toast.error(`Amount exceeds available balance. Available: $${availableBalance.toFixed(2)}, Requested: $${amount.toFixed(2)}`);
       return;
     }
     
@@ -161,7 +168,21 @@ export default function SellerWithdrawals() {
         </div>
 
         {/* Balance Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                  <Wallet className="w-6 h-6 text-purple-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm text-muted-foreground">Total Revenue</p>
+                  <p className="text-2xl font-bold text-purple-600">${balanceData.totalRevenue.toFixed(2)}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center gap-3">
