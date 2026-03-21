@@ -1,37 +1,72 @@
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
+import { useStore } from "@/lib/store";
 import { 
   BarChart2, TrendingUp, Users, Download, Eye, DollarSign,
   Calendar, ArrowUpRight, ArrowDownRight, Package
 } from "lucide-react";
 
 export default function SellerAnalytics() {
-  // Mock analytics data
-  const stats = {
-    totalViews: 12453,
-    totalDownloads: 892,
-    totalRevenue: 2456.78,
-    activeUsers: 342,
-    conversionRate: 7.2
+  const { items, purchases, currentUser, calculateSellerBalance } = useStore();
+  
+  // Get seller's items
+  const myItems = items.filter(i => i.sellerId === currentUser?.id);
+  const approvedItems = myItems.filter(i => i.status === 'Approved');
+  
+  // Calculate real analytics data
+  const mySales = purchases.filter(p => {
+    const item = myItems.find(i => i.id === p.itemId);
+    return item && item.sellerId === currentUser?.id;
+  });
+  
+  const totalViews = myItems.reduce((sum, item) => sum + item.testCount, 0);
+  const totalDownloads = mySales.length;
+  const totalRevenue = mySales.reduce((sum, sale) => sum + sale.price, 0);
+  const uniqueCustomers = new Set(mySales.map(s => s.userId)).size;
+  const conversionRate = totalViews > 0 ? ((totalDownloads / totalViews) * 100) : 0;
+
+  // Generate monthly data from real purchases (group by month)
+  const monthlyData = mySales.reduce((acc, sale) => {
+    const month = new Date(sale.date).toLocaleDateString('en-US', { month: 'short' });
+    const existingMonth = acc.find(m => m.month === month);
+    if (existingMonth) {
+      existingMonth.views += 1; // Each purchase counts as a view
+      existingMonth.downloads += 1;
+      existingMonth.revenue += sale.price;
+    } else {
+      acc.push({ 
+        month,
+        views: 1,
+        downloads: 1,
+        revenue: sale.price
+      });
+    }
+    return acc;
+  }, [] as { month: string; views: number; downloads: number; revenue: number }[]);
+
+  // Get top performing workflows
+  const topWorkflows = approvedItems
+    .map(item => {
+      const itemSales = mySales.filter(sale => sale.itemId === item.id);
+      return {
+        name: item.title,
+        views: item.testCount,
+        downloads: itemSales.length,
+        revenue: itemSales.reduce((sum, sale) => sum + sale.price, 0)
+      };
+    })
+    .sort((a, b) => b.revenue - a.revenue)
+    .slice(0, 5);
+
+  // Calculate trend percentages (mock for now, would compare with previous period)
+  const trends = {
+    views: +12.5,
+    downloads: +8.3,
+    revenue: +15.7,
+    users: +5.2,
+    conversion: -2.1
   };
-
-  const monthlyData = [
-    { month: 'Jan', views: 1200, downloads: 85, revenue: 245.50 },
-    { month: 'Feb', views: 1450, downloads: 92, revenue: 267.80 },
-    { month: 'Mar', views: 1680, downloads: 108, revenue: 312.40 },
-    { month: 'Apr', views: 1890, downloads: 124, revenue: 358.90 },
-    { month: 'May', views: 2100, downloads: 145, revenue: 420.30 },
-    { month: 'Jun', views: 2333, downloads: 158, revenue: 456.78 }
-  ];
-
-  const topWorkflows = [
-    { name: "AI Content Generator", views: 3421, downloads: 287, revenue: 823.50 },
-    { name: "Social Media Automation", views: 2890, downloads: 198, revenue: 567.20 },
-    { name: "Email Marketing Bot", views: 2156, downloads: 156, revenue: 447.80 },
-    { name: "Data Analysis Helper", views: 1892, downloads: 134, revenue: 384.60 },
-    { name: "SEO Optimizer", views: 1094, downloads: 87, revenue: 233.68 }
-  ];
 
   return (
     <DashboardLayout role="seller">
@@ -52,9 +87,10 @@ export default function SellerAnalytics() {
             </div>
             <span className="text-sm text-muted-foreground font-medium">Total Views</span>
           </div>
-          <p className="text-2xl font-bold">{stats.totalViews.toLocaleString()}</p>
+          <p className="text-2xl font-bold">{totalViews.toLocaleString()}</p>
           <p className="text-xs text-emerald-600 flex items-center gap-1 mt-1">
-            <ArrowUpRight className="w-3 h-3" /> +12.5%
+            {trends.views > 0 ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+            {trends.views > 0 ? '+' : ''}{trends.views}%
           </p>
         </div>
 
@@ -65,9 +101,10 @@ export default function SellerAnalytics() {
             </div>
             <span className="text-sm text-muted-foreground font-medium">Downloads</span>
           </div>
-          <p className="text-2xl font-bold">{stats.totalDownloads.toLocaleString()}</p>
+          <p className="text-2xl font-bold">{totalDownloads.toLocaleString()}</p>
           <p className="text-xs text-emerald-600 flex items-center gap-1 mt-1">
-            <ArrowUpRight className="w-3 h-3" /> +8.3%
+            {trends.downloads > 0 ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+            {trends.downloads > 0 ? '+' : ''}{trends.downloads}%
           </p>
         </div>
 
@@ -78,9 +115,10 @@ export default function SellerAnalytics() {
             </div>
             <span className="text-sm text-muted-foreground font-medium">Revenue</span>
           </div>
-          <p className="text-2xl font-bold">${stats.totalRevenue.toFixed(2)}</p>
+          <p className="text-2xl font-bold">${totalRevenue.toFixed(2)}</p>
           <p className="text-xs text-emerald-600 flex items-center gap-1 mt-1">
-            <ArrowUpRight className="w-3 h-3" /> +15.7%
+            {trends.revenue > 0 ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+            {trends.revenue > 0 ? '+' : ''}{trends.revenue}%
           </p>
         </div>
 
@@ -91,9 +129,10 @@ export default function SellerAnalytics() {
             </div>
             <span className="text-sm text-muted-foreground font-medium">Active Users</span>
           </div>
-          <p className="text-2xl font-bold">{stats.activeUsers}</p>
+          <p className="text-2xl font-bold">{uniqueCustomers}</p>
           <p className="text-xs text-emerald-600 flex items-center gap-1 mt-1">
-            <ArrowUpRight className="w-3 h-3" /> +5.2%
+            {trends.users > 0 ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+            {trends.users > 0 ? '+' : ''}{trends.users}%
           </p>
         </div>
 
@@ -104,9 +143,10 @@ export default function SellerAnalytics() {
             </div>
             <span className="text-sm text-muted-foreground font-medium">Conversion</span>
           </div>
-          <p className="text-2xl font-bold">{stats.conversionRate}%</p>
+          <p className="text-2xl font-bold">{conversionRate.toFixed(1)}%</p>
           <p className="text-xs text-red-600 flex items-center gap-1 mt-1">
-            <ArrowDownRight className="w-3 h-3" /> -2.1%
+            {trends.conversion > 0 ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+            {trends.conversion > 0 ? '+' : ''}{trends.conversion}%
           </p>
         </div>
       </div>
@@ -127,7 +167,7 @@ export default function SellerAnalytics() {
                   <div className="flex-1 bg-secondary rounded-full h-2 overflow-hidden">
                     <div 
                       className="h-full gradient-bg transition-all duration-500"
-                      style={{ width: `${(month.views / 2333) * 100}%` }}
+                      style={{ width: `${(month.views / Math.max(...monthlyData.map(m => m.views))) * 100}%` }}
                     />
                   </div>
                 </div>
