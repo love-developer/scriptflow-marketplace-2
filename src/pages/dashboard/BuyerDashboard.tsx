@@ -76,6 +76,29 @@ export default function BuyerDashboard() {
         </div>
       </div>
 
+      {/* Become a Seller Banner */}
+      {currentUser?.role === 'buyer' && (
+        <div className="bg-gradient-to-r from-emerald-500/10 to-blue-500/10 border border-emerald-500/30 rounded-2xl p-6 mb-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-bold flex items-center gap-2 mb-2">
+                <Crown className="w-5 h-5 text-emerald-500" />
+                Want to Sell Your Own Workflows?
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Apply for seller status and start earning from your AI workflows and Roblox scripts
+              </p>
+            </div>
+            <Link href="/become-seller">
+              <Button className="gradient-bg text-white border-0 hover:opacity-90 gap-2">
+                <Crown className="w-4 h-4" />
+                Apply to Sell
+              </Button>
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* Summary cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         <div className="bg-card border border-border rounded-2xl p-5">
@@ -145,8 +168,10 @@ export default function BuyerDashboard() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {robloxScripts.slice(0, 9).map((script, index) => {
-            const isAccessible = index < accessibleScripts;
+          {robloxScripts.slice(0, 9).map((script) => {
+            const isAccessible = subscriptionPlan === 'Premium+' || 
+                               (subscriptionPlan === 'Premium' && robloxScripts.indexOf(script) < 10) ||
+                               (subscriptionPlan === 'Free' && robloxScripts.indexOf(script) < 3);
             return (
               <div key={script.id} className={`group bg-card border rounded-2xl p-4 transition-all card-hover ${
                 isAccessible 
@@ -171,7 +196,9 @@ export default function BuyerDashboard() {
                   <span className={`text-xs font-medium ${
                     isAccessible ? 'text-primary' : 'text-muted-foreground'
                   }`}>
-                    {isAccessible ? 'Available' : subscriptionPlan === 'Free' ? 'Premium+' : 'Premium'}
+                    {isAccessible ? 'Available' : 
+                     subscriptionPlan === 'Free' ? 'Premium Required' : 
+                     subscriptionPlan === 'Premium' ? 'Premium+ Required' : 'Contact Support'}
                   </span>
                   <Button size="sm" variant="outline" className="text-xs h-7 px-2 hover:bg-primary/10 hover:border-primary/30 hover:text-primary">
                     View Details

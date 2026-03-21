@@ -131,9 +131,9 @@ export function Register() {
     register(email, password, username);
     
     if (wantsToSell) {
-      // Redirect to seller application page
-      setLocation('/become-seller');
-      toast.success("Account created! Please complete your seller application.");
+      // Show success message and go to buyer dashboard first
+      toast.success("Account created! You can apply for seller status from your dashboard.");
+      setLocation('/dashboard');
     } else {
       toast.success("Account created successfully");
       setLocation('/dashboard');
